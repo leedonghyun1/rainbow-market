@@ -23,7 +23,14 @@ const Profile: NextPage = () => {
     <Layout hasTabBar title="My COS">
       <div className="py-10 px-4">
         <div className="flex items-center space-x-3">
-          <div className="w-16 h-16 bg-slate-500 rounded-full" />
+          {user?.avatar ? (
+            <img
+              src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user.avatar}/public`}
+              className="w-16 h-16 border-2 border-orange-300 rounded-full"
+            />
+          ) : (
+            <div className="w-16 h-16 bg-slate-500 rounded-full" />
+          )}
           <div className="flex flex-col">
             <span className="font-medium text-gray-900">
               {user?.name ? user?.name : "유저 로딩중..."}
@@ -101,7 +108,14 @@ const Profile: NextPage = () => {
         {data?.reviews.map((reviews) => (
           <div key={reviews.id} className="mt-12">
             <div className="flex space-x-4 items-center">
-              <div className="w-12 h-12 rounded-full bg-slate-500" />
+              {user?.avatar ? (
+                <img
+                  src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user.avatar}/public`}
+                  className="w-12 h-12 border-2 border-orange-300 rounded-full"
+                />
+              ) : (
+                <div className="w-12 h-12 bg-slate-500 rounded-full" />
+              )}
               <div>
                 <h4 className="text-sm font-bold text-gray-800">
                   {reviews?.createdBy.name}
