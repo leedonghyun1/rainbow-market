@@ -8,10 +8,19 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@prisma/client": "^4.15.0",
     "@tailwindcss/forms": "^0.5.3",
+    "@types/nodemailer": "^6.4.8",
+    "framer-motion": "^10.12.16",
+    "iron-session": "^6.3.1",
+    "link": "^1.5.1",
     "next": "13.4.4",
+    "nodemailer": "^6.9.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.44.3",
+    "swr": "^2.1.5",
+    "twilio": "^4.11.2",
     "typescript": "^5.0.4"
   },
   "devDependencies": {
