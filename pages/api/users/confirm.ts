@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import client from "pages/libs/server/client";
-import smtpTransport from "pages/libs/server/email";
+// import smtpTransport from "pages/libs/server/email";
 import withHandler, { ResponsType } from "pages/libs/server/withHandler";
 import twilio from "twilio";
 import { withApiSession } from "pages/libs/server/withSession";

@@ -19,7 +19,7 @@ const Streams: NextPage = () => {
   console.log(data);
 
   return (
-    <Layout hasTabBar title="Live">
+    <Layout hasTabBar title="Live" seoTitle="Live">
       <div className="py-10 divide-y-[1px] space-y-4 px-2">
         {data?.stream?.map((streams) => (
           <Link

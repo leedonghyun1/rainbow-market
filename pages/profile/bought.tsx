@@ -6,7 +6,7 @@ import React from "react";
 
 const Bought: NextPage = () => {
   return (
-    <Layout title="구매내역" canGoBack>
+    <Layout title="구매내역" canGoBack seoTitle="구매내역">
       <div className="flex flex-col space-y-5 pb-10  divide-y">
         <ProductList kind="purchases" />
       </div>

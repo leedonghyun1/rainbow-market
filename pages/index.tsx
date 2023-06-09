@@ -22,7 +22,7 @@ export default function Home() {
   const { data } = useSWR<ProductsResponse>("/api/products");
 
   return (
-    <Layout title="Home" hasTabBar>
+    <Layout title="Home" hasTabBar seoTitle="Home">
       {data ? (
         <div className="flex flex-col space-y-5 py-10">
           {data?.products?.map((products) => (

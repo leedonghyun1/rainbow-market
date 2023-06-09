@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const Chats: NextPage = () => {
   return (
-    <Layout hasTabBar title="Chat">
+    <Layout hasTabBar title="Chat" seoTitle="채팅내역">
       <div className="py-10 divide-y-[1px] ">
         {[1, 1, 1, 1, 1, 1, 1].map((_, i) => (
           <Link

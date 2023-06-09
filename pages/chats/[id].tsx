@@ -1,11 +1,13 @@
 import type { NextPage } from "next";
 import Layout from "pages/components/layout";
 import Message from "pages/components/message";
+import useUser from "pages/libs/client/useUser";
 import React from "react";
 
 const ChatDetail: NextPage = () => {
+  const { user } = useUser();
   return (
-    <Layout canGoBack title="Steve">
+    <Layout canGoBack title="Steve" seoTitle={`${user?.name}의 채팅내역 `}>
       <div className="py-10 pb-16 px-4 space-y-4">
         <Message message="Hi how much are you selling them for?" />
         <Message message="I want ￦20,000" reversed />

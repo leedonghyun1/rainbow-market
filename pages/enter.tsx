@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import React, { useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { useState } from "react";
 import cls from "./libs/client/utils";
 import { useForm } from "react-hook-form";
@@ -55,11 +55,10 @@ const Enter: NextPage = () => {
       router.push("/");
     }
   }, [tokenData, router]);
-
-  console.log(data);
+ 
   return (
     <div className="mt-16 px-3">
-      <h3 className="text-3xl font-bold text-center text-[#a537fd]">
+      <h3 className="text-3xl p-1 font-bold text-center rounded-2xl text-white bg-gradient-to-r from-purple-400 from-10% via-orange-200 via-60% to-teal-200 to-90% ">
         Enter to CCOS MOSS
       </h3>
       <div className="mt-16">
@@ -171,7 +170,6 @@ const Enter: NextPage = () => {
             </form>
           </>
         )}
-
         <div className="mt-6">
           <div className="relative">
             <div className="absolute w-full border-t border-[#A191E4]" />

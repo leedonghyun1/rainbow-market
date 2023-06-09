@@ -37,7 +37,7 @@ const ItemDetail: NextPage = () => {
   }
 
   return (
-    <Layout canGoBack>
+    <Layout canGoBack seoTitle={data?.product.name}>
       {data ? (
         <div className="px-4 py-10">
           <div className="mb-8">
