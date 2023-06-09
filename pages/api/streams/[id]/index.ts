@@ -8,6 +8,7 @@ import { withApiSession } from "pages/libs/server/withSession";
 async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
   const {
     query: { id },
+    session: {user},
   } = req;
   if(req.method=="GET"){
     const stream = await client.stream.findUnique({
@@ -17,7 +18,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
       include: {
         message: {
           select: {
-            id:true,
+            id: true,
             message: true,
             user: {
               select: {
@@ -29,6 +30,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
         },
       },
     });
+    const isOwner = stream?.userId === user?.id;
+    if (stream && !isOwner) {
+      stream.cloudflareKey = "abnormal access";
+      stream.cloudflareUrl = "abnormal access";
+    }
 
     res.json({
       ok: true,

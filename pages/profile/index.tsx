@@ -25,7 +25,7 @@ const Profile: NextPage = () => {
         <div className="flex items-center space-x-3">
           {user?.avatar ? (
             <img
-              src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user.avatar}/public`}
+              src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user.avatar}/avatar`}
               className="w-16 h-16 border-2 border-orange-300 rounded-full"
             />
           ) : (
@@ -110,7 +110,7 @@ const Profile: NextPage = () => {
             <div className="flex space-x-4 items-center">
               {user?.avatar ? (
                 <img
-                  src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user.avatar}/public`}
+                  src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user.avatar}/avatar`}
                   className="w-12 h-12 border-2 border-orange-300 rounded-full"
                 />
               ) : (

@@ -134,7 +134,7 @@ model Purchase {
 }
 
 model Stream {
-  id           Int      @id @default(autoincrement())
+  id           Int      @id @default(autoincrement()) 
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   name String
@@ -143,6 +143,10 @@ model Stream {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
   message Message[]
+  cloudflareId String
+  cloudflareUrl String
+  cloudflareKey String
+
 }
 
 model Message {
@@ -154,4 +158,5 @@ model Message {
   message String @db.MediumText
   stream    Stream     @relation(fields: [streamId], references: [id], onDelete: Cascade)
   streamId    Int
+  
 }

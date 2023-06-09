@@ -5,6 +5,7 @@ import Item from "./components/item";
 import FloatingButton from "./components/floating-button";
 import useSWR from "swr";
 import { Favorite, Product } from "@prisma/client";
+import Image from "next/image";
 
 export interface ProductWithFavsCount extends Product {
   _count: {
@@ -52,6 +53,7 @@ export default function Home() {
           </FloatingButton>
         </div>
       ) : "Loading..."}
+
     </Layout>
   );
 }

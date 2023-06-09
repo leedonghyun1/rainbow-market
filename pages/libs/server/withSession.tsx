@@ -9,7 +9,7 @@ declare module "iron-session" {
 }
 
 const cookieOptions = {
-  cookieName: "ccosmos-session",
+  cookieName: "ccosmossession",
   password: process.env.COOKIE_PASSWORD,
 };
 
