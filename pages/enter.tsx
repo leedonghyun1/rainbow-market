@@ -59,7 +59,7 @@ const Enter: NextPage = () => {
   return (
     <div className="mt-16 px-3">
       <h3 className="text-3xl p-1 font-bold text-center rounded-2xl text-white bg-gradient-to-r from-purple-400 from-10% via-orange-200 via-60% to-teal-200 to-90% ">
-        Enter to CCOS MOSS
+      무지개마트
       </h3>
       <div className="mt-16">
         {data?.ok ? (

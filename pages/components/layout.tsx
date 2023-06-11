@@ -27,7 +27,8 @@ export default function Layout({
       <Head>
         <title> {seoTitle} | COSMOS</title>
       </Head>
-      <div className="bg-white w-full h-12 max-w-2xl justify-center text-lg px-10 font-medium  fixed text-gray-800 border-b top-0  flex items-center">
+      <div className="bg-white text-gray-600 w-full h-12 max-w-2xl justify-center rounded-md text-2xl px-10 font-bold  fixed border-b top-0  flex items-center 
+">
         {canGoBack ? (
           <button onClick={onClick} className="absolute left-4">
             <svg

@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "../components/layout";
 import FloatingButton from "pages/components/floating-button";
 import Link from "next/link";
@@ -25,8 +25,9 @@ interface PostsResponse {
 const Community: NextPage = () => {
   const { latitude, longitude } = useCoords();
   const { data } = useSWR<PostsResponse>( latitude && longitude ?  `/api/posts?latitude=${latitude}&longitude=${longitude}` : null);
+
   return (
-    <Layout hasTabBar title="동네생활">
+    <Layout hasTabBar title="동네생활" seoTitle={`${data?.posts[0]?.user.name}의 동네생활`}>
       {latitude && longitude ? (
         <div className="space-y-4 divide-y-[2px]">
           {data?.posts?.map((post) => (

@@ -6,10 +6,12 @@ import FloatingButton from "./components/floating-button";
 import useSWR from "swr";
 import { Favorite, Product } from "@prisma/client";
 import Image from "next/image";
+import { NextPage } from "next";
+import { SWRConfig } from "swr/_internal";
 
 export interface ProductWithFavsCount extends Product {
   _count: {
-    favorite:number
+    favorite: number;
   };
 }
 
@@ -18,22 +20,21 @@ interface ProductsResponse {
   products: ProductWithFavsCount[];
 }
 
-export default function Home() {
+export function Home() {
   const { data } = useSWR<ProductsResponse>("/api/products");
 
   return (
     <Layout title="Home" hasTabBar seoTitle="Home">
-      {data ? (
         <div className="flex flex-col space-y-5 py-10">
-          {data?.products?.map((products) => (
+          { data ? data?.products?.map((products) => (
             <Item
               id={products.id}
               key={products.id}
               title={products.name}
               price={products.price}
-              hearts={products._count.favorite}
+              hearts={products._count?.favorite || 0}
             />
-          ))}
+          )) : "데이터 로딩..." }
           <FloatingButton href="/products/upload">
             <svg
               className="h-6 w-6"
@@ -52,8 +53,32 @@ export default function Home() {
             </svg>
           </FloatingButton>
         </div>
-      ) : "Loading..."}
-
     </Layout>
   );
 }
+
+const Page : NextPage<{products: ProductWithFavsCount[]}> = ({products}) => {
+  return (
+    <SWRConfig value={{
+      fallback:{
+        "/api/products": {
+          ok:true,
+          products,
+        }
+      }
+    }}>
+      <Home />
+    </SWRConfig>
+  );
+}
+
+export async function getServerSideProps(){
+  const products = await client.product.findMany({});
+  return {
+    props:{
+      products: JSON.parse(JSON.stringify(products)),
+    }
+  }
+}
+
+export default Page;

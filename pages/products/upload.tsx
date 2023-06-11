@@ -69,7 +69,7 @@ const Upload: NextPage = () => {
   },[photoWatch])
 
   return (
-    <Layout canGoBack title="Upload Product">
+    <Layout canGoBack title="Upload Product" seoTitle="판매">
       <form className="p-4 space-y-4" onSubmit={handleSubmit(onValid)}>
         <div>
           {photoPreview ? (
