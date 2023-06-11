@@ -27,7 +27,7 @@ export default function Layout({
       <Head>
         <title> {seoTitle} | COSMOS</title>
       </Head>
-      <div className="bg-white text-gray-600 w-full h-12 max-w-2xl justify-center rounded-md text-2xl px-10 font-bold  fixed border-b top-0  flex items-center 
+      <div className=" text-white bg-gradient-to-r from-purple-400 from-10% via-orange-200 via-60% to-teal-200 to-90% w-full h-12 max-w-2xl justify-center rounded-md text-2xl px-10 font-bold  fixed border-b top-0  flex items-center 
 ">
         {canGoBack ? (
           <button onClick={onClick} className="absolute left-4">
@@ -59,7 +59,7 @@ export default function Layout({
             className={cls(
               "flex flex-col items-center space-y-2 ",
               router.pathname === "/"
-                ? "text-orange-500"
+                ? "text-purple-600"
                 : "hover:text-gray-500 transition-colors"
             )}
           >
@@ -77,14 +77,14 @@ export default function Layout({
                 d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
               ></path>
             </svg>
-            <span>홈</span>
+            <span>마켙</span>
           </Link>
           <Link
             href="/community"
             className={cls(
               "flex flex-col items-center space-y-2 ",
               router.pathname === "/community"
-                ? "text-orange-500"
+                ? "text-purple-600"
                 : "hover:text-gray-500 transition-colors"
             )}
           >
@@ -109,7 +109,7 @@ export default function Layout({
             className={cls(
               "flex flex-col items-center space-y-2 ",
               router.pathname === "/chats"
-                ? "text-orange-500"
+                ? "text-purple-600"
                 : "hover:text-gray-500 transition-colors"
             )}
           >
@@ -134,7 +134,7 @@ export default function Layout({
             className={cls(
               "flex flex-col items-center space-y-2 ",
               router.pathname === "/streams"
-                ? "text-orange-500"
+                ? "text-purple-600"
                 : "hover:text-gray-500 transition-colors"
             )}
           >
@@ -159,7 +159,7 @@ export default function Layout({
             className={cls(
               "flex flex-col items-center space-y-2 ",
               router.pathname === "/profile"
-                ? "text-orange-500"
+                ? "text-purple-600"
                 : "hover:text-gray-500 transition-colors"
             )}
           >

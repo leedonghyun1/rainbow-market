@@ -8,6 +8,7 @@ import { Favorite, Product } from "@prisma/client";
 import Image from "next/image";
 import { NextPage } from "next";
 import { SWRConfig } from "swr/_internal";
+import client from "pages/libs/server/client";
 
 export interface ProductWithFavsCount extends Product {
   _count: {

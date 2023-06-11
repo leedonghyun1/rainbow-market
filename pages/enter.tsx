@@ -58,8 +58,8 @@ const Enter: NextPage = () => {
  
   return (
     <div className="mt-16 px-3">
-      <h3 className="text-3xl p-1 font-bold text-center rounded-2xl text-white bg-gradient-to-r from-purple-400 from-10% via-orange-200 via-60% to-teal-200 to-90% ">
-      무지개마트
+      <h3 className="text-3xl p-5 font-bold text-center rounded-2xl text-white bg-gradient-to-r from-purple-400 from-10% via-orange-200 via-60% to-teal-200 to-90% ">
+      무지개마켙
       </h3>
       <div className="mt-16">
         {data?.ok ? (
@@ -81,11 +81,11 @@ const Enter: NextPage = () => {
                 id="token"
                 type="number"
                 required
-                className="ease-in-out duration-500 focus:ring-2 appearance-none w-full px-3 py-2 border border-gray-300 rounded-lg placeholder-gray-500  focus:outline-none focus:ring-[#A191E4] focus:border-[#A191E4]"
+                className="ease-in-out duration-500 focus:ring-2 appearance-none w-full px-3 py-2 border border-gray-300 rounded-lg placeholder-gray-500  focus:outline-none focus:ring-[#a537fd] focus:border-[#A191E4]"
               />
             </div>
 
-            <button className="mt-5 font-normal text-white bg-[#A191E4] hover:bg-purple-400 hover:text-white hover:font-medium w-1/2 m-auto p-3 rounded-2xl shadow-sm hover:ring-2 hover:ring-offset-2 hover:ring-purple-400 ease-in-out duration-300">
+            <button className="mt-5 font-normal text-white bg-[#a537fd] hover:bg-purple-400 hover:text-white hover:font-medium w-1/2 m-auto p-3 rounded-2xl shadow-sm hover:ring-2 hover:ring-offset-2 hover:ring-purple-400 ease-in-out duration-300">
               {tokenLoading ? "Loading..." : "Confirm Token"}
             </button>
           </form>
@@ -143,7 +143,7 @@ const Enter: NextPage = () => {
                 ) : null}
                 {method === "phone" ? (
                   <div className="flex rounded-sm shadow-sm ">
-                    <span className="flex items-center justify-center px-4 rounded-sm rounded-l-lg border border-gray-300 border-r-0 font-semibold">
+                    <span className="flex items-center justify-center px-4 rounded-sm rounded-l-lg border border-gray-300 border-r-0 font-semibold text-gray-500">
                       +82
                     </span>
                     <input
@@ -153,6 +153,7 @@ const Enter: NextPage = () => {
                       id="input"
                       type="number"
                       required
+                      placeholder="Please input your phone number"
                       className="ease-in-out duration-500 focus:ring-2 appearance-none w-full px-3 py-2 border border-gray-300 rounded-r-lg placeholder-gray-500  focus:outline-none focus:ring-[#A191E4] focus:border-[#A191E4]"
                     />
                   </div>
