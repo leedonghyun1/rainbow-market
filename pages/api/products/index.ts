@@ -1,43 +1,40 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import withHandler, { ResponsType } from "pages/libs/server/withHandler";
-import { withIronSessionApiRoute } from "iron-session/next";
-import client from "pages/libs/server/client";
+import withHandler from "pages/libs/server/withHandler";
 import { withApiSession } from "pages/libs/server/withSession";
 
-
-async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
-  if(req.method=="POST"){
+async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if(req.method == "POST"){
     const {
-      body: { name, price, description, photoId },
+      body: { name, price, description, link},
       session: { user },
     } = req;
     const product = await client.product.create({
-      data:{
+      data: {
         name,
         price: +price,
         description,
-        image: photoId,
-        user:{
-          connect:{
-            id: user?.id
-          }
-        }
-      }
-    })
-    res.json({
-      ok: true,
-      product,
+        link,
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
     });
+    res.json({
+      ok:true,
+      product,
+    })
   }
-  if(req.method=="GET"){
+  if(req.method == "GET"){
     const products = await client.product.findMany({
       include:{
         _count:{
-          select: {
-            favorite :true,
+          select:{
+            favorites:true,
           }
-        }
-      }
+        },
+      },
     })
     res.json({
       ok:true,
@@ -45,8 +42,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
     })
   }
 }
+
 export default withApiSession(withHandler({
-  methods: ["GET","POST"],
+  methods:["POST","GET"],
   handler,
   isPrivate:true,
-}));
+}))

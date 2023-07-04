@@ -3,13 +3,12 @@ import { withIronSessionApiRoute } from "iron-session/next"
 declare module "iron-session" {
   interface IronSessionData {
     user?: {
-      id: number;
+      id: string;
     };
   }
 }
-
 const cookieOptions = {
-  cookieName: "ccosmossession",
+  cookieName: "rainbowmarket",
   password: process.env.COOKIE_PASSWORD,
 };
 

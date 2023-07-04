@@ -1,33 +1,20 @@
-import { ProductWithFavsCount } from "pages";
-import useSWR from "swr";
 import Item from "./item";
 
-interface Record {
-  id:number;
-  product:ProductWithFavsCount;
-}
-
-interface ProductListResponse {
-  [key:string]: Record[]
-}
-
 interface ProductListProps {
-  kind: "sold" | "purchases" | "favs";
+  kind: "uploaded" | "favs";
 }
 
-export default function ProductList({kind}: ProductListProps) {
-  const { data } =  useSWR<ProductListResponse>(`/api/users/me/${kind}`)
-  return data ? (
+export default function ProductList({kind}:ProductListProps){
+  return (
     <>
-      {data?.[kind].map((records) => (
+      <div className="mt-16">
         <Item
-          id={records.product.id}
-          key={records.id}
-          title={records.product.name}
-          price={records.product.price}
-          hearts={records.product._count.favorite}
-        />
-      ))}
+          id={12}
+          title={"마우스판매"}
+          price={20000}
+          username={"이동현"}
+        ></Item>
+      </div>
     </>
-  ) : null;
+  );
 }

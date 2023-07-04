@@ -1,183 +1,124 @@
-import React from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import cls from "../libs/client/utils";
-import Head from "next/head";
+"use client";
 
-interface LayoutProps {
-  title?: string;
+import { signIn, signOut, useSession } from "next-auth/react";
+import Head from "next/head";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Script from "next/script";
+import cls from "pages/libs/client/utils";
+
+export interface LayoutProps {
+  seoTitle: string;
   canGoBack?: boolean;
-  hasTabBar?: boolean;
   children: React.ReactNode;
-  seoTitle:string;
+  hasTabBar: boolean;
+  title?: string;
 }
+
 export default function Layout({
-  title,
-  canGoBack,
-  hasTabBar,
-  children,
   seoTitle,
+  canGoBack,
+  children,
+  hasTabBar,
+  title,
 }: LayoutProps) {
+  const pathname = usePathname();
   const router = useRouter();
+  const { data:session } = useSession();
   const onClick = () => {
     router.back();
   };
   return (
     <div>
       <Head>
-        <title> {seoTitle} | COSMOS</title>
+        <title> {seoTitle} | 무지개 슈퍼마켓</title>
       </Head>
-      <div className=" text-white bg-gradient-to-r from-purple-400 from-10% via-orange-200 via-60% to-teal-200 to-90% w-full h-12 max-w-2xl justify-center rounded-md text-2xl px-10 font-bold  fixed border-b top-0  flex items-center 
-">
+      <div className="text-gray-700 bg-white text-xl w-full max-auto h-12 max-w-2xl flex items-center justify-center font-bold fixed top-0 border-b">
         {canGoBack ? (
-          <button onClick={onClick} className="absolute left-4">
+          <button className="absolute left-4" onClick={onClick}>
             <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
+              height="1em"
+              viewBox="0 0 448 512"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 19l-7-7 7-7"
-              ></path>
+              <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
             </svg>
           </button>
         ) : null}
         {title ? (
           <span className={cls(canGoBack ? "mx-auto" : "", "")}>{title}</span>
         ) : null}
+        {session && (
+          <button
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="mr-3"
+          >
+            <img src={`${session.user.image}`} className="h-10 w-10 rounded-full" />
+          </button>
+        )}
+        {!session && (
+          <button onClick={() => router.replace("/login")} className="text-sm">
+            Log In
+          </button>
+        )}
       </div>
-      <div className={cls("pt-12", hasTabBar ? "pb-24" : "")}>{children}</div>
+      <div className={cls("pt-5", hasTabBar ? "pb-24" : "")}>{children}</div>
       {hasTabBar ? (
-        <nav className="bg-white mx-auto max-w-2xl text-gray-700 border-t fixed bottom-0 w-full px-10 pb-5 pt-3 flex justify-between text-xs">
+        <nav className="bg-white max-auto max-w-2xl text-gray-700 border-t fixed bottom-0 w-full px-10 pb-5 pt-3 flex justify-between text-sm">
           <Link
             href="/"
             className={cls(
-              "flex flex-col items-center space-y-2 ",
-              router.pathname === "/"
-                ? "text-purple-600"
-                : "hover:text-gray-500 transition-colors"
+              "flex flex-col items-center space-y-2",
+              pathname?.startsWith("/")
+                ? "text-purple-600 font-semibold"
+                : "hover:text-gray-900 transition-colors"
             )}
           >
             <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
+              height="1em"
+              viewBox="0 0 576 512"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              ></path>
+              <path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z" />
             </svg>
-            <span>마켙</span>
+            <span>홈</span>
           </Link>
           <Link
-            href="/community"
+            href="/products/upload"
             className={cls(
-              "flex flex-col items-center space-y-2 ",
-              router.pathname === "/community"
-                ? "text-purple-600"
-                : "hover:text-gray-500 transition-colors"
+              "flex flex-col items-center space-y-2",
+              pathname?.startsWith("/products/upload")
+                ? "text-purple-600  font-semibold"
+                : "hover:text-gray-900 transition-colors"
             )}
           >
             <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
+              height="1em"
+              viewBox="0 0 512 512"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-              ></path>
+              <path d="M288 109.3V352c0 17.7-14.3 32-32 32s-32-14.3-32-32V109.3l-73.4 73.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L288 109.3zM64 352H192c0 35.3 28.7 64 64 64s64-28.7 64-64H448c35.3 0 64 28.7 64 64v32c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V416c0-35.3 28.7-64 64-64zM432 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z" />
             </svg>
-            <span>동내생활</span>
+            <span>슈퍼등록</span>
           </Link>
           <Link
-            href="/chats"
+            href="/profile/edit"
             className={cls(
-              "flex flex-col items-center space-y-2 ",
-              router.pathname === "/chats"
-                ? "text-purple-600"
-                : "hover:text-gray-500 transition-colors"
+              "flex flex-col items-center space-y-2",
+              pathname?.startsWith("/profile/edit")
+                ? "text-purple-600 font-semibold"
+                : "hover:text-gray-900 transition-colors"
             )}
           >
             <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
+              height="1em"
+              viewBox="0 0 448 512"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-              ></path>
+              <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
             </svg>
-            <span>채팅</span>
-          </Link>
-          <Link
-            href="/streams"
-            className={cls(
-              "flex flex-col items-center space-y-2 ",
-              router.pathname === "/streams"
-                ? "text-purple-600"
-                : "hover:text-gray-500 transition-colors"
-            )}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-              ></path>
-            </svg>
-            <span>라이브</span>
-          </Link>
-          <Link
-            href="/profile"
-            className={cls(
-              "flex flex-col items-center space-y-2 ",
-              router.pathname === "/profile"
-                ? "text-purple-600"
-                : "hover:text-gray-500 transition-colors"
-            )}
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              ></path>
-            </svg>
-            <span>나의 코스모스</span>
+            <span>나의슈퍼</span>
           </Link>
         </nav>
       ) : null}

@@ -1,15 +1,14 @@
-import { NextRequest, NextFetchEvent, userAgent, NextResponse } from "next/server"
+import { NextApiRequest, NextApiResponse } from "next"
+import { getToken } from "next-auth/jwt"
+import { NextFetchEvent } from "next/server"
 
-export function middleware(req: NextRequest, ev: NextFetchEvent) {
-  if (req.nextUrl.pathname.startsWith(`/`)) {
-    if (!req.url.includes("/api")) {
-      if (!req.url.includes("/enter") && !req.cookies.has("ccosmossession")) {
-        // body 가 넘어가지 않기 때문에 error page 작성 필요.
-        req.nextUrl.searchParams.set("from", req.nextUrl.pathname);
-        req.nextUrl.pathname = "/enter";
-        return NextResponse.redirect(req.nextUrl);
-      }
-    }
-    // console.log(`GEO: ${req.geo}`);
-  }
-} 
+const secret = process.env.NEXTAUTH_SECRET
+
+export default async function sessionHandler(req:NextApiRequest, res:NextApiResponse, event: NextFetchEvent) {
+  const token = await getToken({ req, secret, raw:true })
+  console.log("JSON Web Token", token);
+}
+
+export const config = {
+  matcher:["/"]
+}
