@@ -1,5 +1,3 @@
-"use client";
-
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
@@ -12,7 +10,7 @@ export interface LayoutProps {
   seoTitle: string;
   canGoBack?: boolean;
   children: React.ReactNode;
-  hasTabBar: boolean;
+  hasTabBar?: boolean;
   title?: string;
 }
 
@@ -52,9 +50,9 @@ export default function Layout({
         {session && (
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="mr-3"
+            className="mr-3 text-sm"
           >
-            <img src={`${session.user.image}`} className="h-10 w-10 rounded-full" />
+           Log Out
           </button>
         )}
         {!session && (

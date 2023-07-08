@@ -31,6 +31,7 @@ const Home: NextPage = () => {
               price={product.price}
               favorite={product._count?.favorite || 0}
               key={product.id}
+              image={product.uploadVideo}
             />
           ))}
         </div>

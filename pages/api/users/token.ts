@@ -34,8 +34,6 @@ async function handler(req:NextApiRequest, res:NextApiResponse){
   }
   await req.session.save();
 
-  console.log(req.session.user.id);
-
   return res.json({
     ok: true,
     token,

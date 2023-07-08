@@ -1,6 +1,9 @@
 import { Product, User } from "@prisma/client";
+import Image from "next/image";
 import { useRouter } from "next/router";
+import Button from "pages/components/button";
 import Layout from "pages/components/layout";
+import useUser from "pages/libs/client/useUser";
 import useSWR from "swr";
 
 interface ProductWitheUser extends Product {
@@ -14,6 +17,7 @@ interface ItemDetailResponse {
 
 export default function ItemDetails() {
   const router = useRouter();
+  const { user } = useUser();
   const { data } = useSWR<ItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
@@ -23,12 +27,31 @@ export default function ItemDetails() {
       {data ? (
         <div className="px-4 py-10">
           <div className="mb-8">
-            <div className="relative">
-              <div className="h-96 w-full bg-gray-600 rounded-lg" />
-            </div>
+            {data.product.uploadVideo ? (
+              <iframe
+                src={`https://customer-odn2bz8flwihe8yi.cloudflarestream.com/${data?.product?.uploadVideo}/iframe`}
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                className="h-96 w-full rounded-lg"
+              ></iframe>
+            ) : (
+              <div className="relative">
+                <div className="h-96 w-full bg-gray-600 rounded-lg" />
+              </div>
+            )}
           </div>
-          <div className="flex justify-between items-center relative">
-            <div className="cursor-pointer py-3 border-t border-b space-x-3 w-12 h-12 rounded-full bg-gray-600"></div>
+          <Button large text="사장님에게 채팅톡톡" onClick={()=>{router.push(`/chat/${data?.product?.id}`)}}/>
+          <div className="flex justify-between items-center relative mt-5">
+            {user?.image ? (
+              <Image
+                src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user?.image}/avatar`}
+                width={40}
+                height={40}
+                className="w-12 h-12 rounded-full "
+                alt={""}
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-slate-500 " />
+            )}
             <div className="text-sm text-gray-700 absolute left-14">
               <p>이동현 님의 프로필</p>
             </div>

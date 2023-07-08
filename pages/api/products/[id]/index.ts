@@ -21,6 +21,18 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             image: true,
           },
         },
+        message:{
+          select:{
+            id:true,
+            message:true,
+            user:{
+              select:{
+                image:true,
+                id:true,
+              }
+            }
+          }
+        }
       },
     });
     // 유사상품 sorting 조건

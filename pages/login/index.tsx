@@ -7,9 +7,6 @@ import useMutation from "pages/libs/client/useMutation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-interface TokenForm {
-  token: string;
-}
 interface loginMutation {
   ok: Boolean;
 }
@@ -21,12 +18,11 @@ const Login: NextPage = () => {
 
   //useMutation
   const [login, { loading, data, error }] =
-    useMutation<loginMutation>("/api/users/login");
+    useMutation<loginMutation>("/api/users/token");
 
   useEffect(()=>{
     if (session) {
       login(session.user.email);
-      console.log(session.user.email)
       router.replace("/");
     }
   },[router, session]);

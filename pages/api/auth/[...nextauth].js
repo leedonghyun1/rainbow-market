@@ -31,4 +31,5 @@ export default NextAuth({
     },
   },
   adapter: PrismaAdapter(client),
+  secret:process.env.SECRET
 });
