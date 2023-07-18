@@ -59,6 +59,15 @@ const SocketHandler = (req, res) => {
           },
         },
       });
+      const updateMessage = await client.room.update({
+        where : {
+          id: newMessage.roomId
+        },
+        data:{
+          lastChat : newMessage.message,
+          timeOfLastChat : new Date(),
+        }
+      })
       socket.emit("receive_message");
     });
   
