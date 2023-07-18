@@ -2,7 +2,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import Script from "next/script";
 import cls from "pages/libs/client/utils";
 

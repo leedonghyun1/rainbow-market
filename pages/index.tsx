@@ -3,6 +3,9 @@ import Item from "./components/item";
 import Layout from "./components/layout";
 import { NextPage } from "next";
 import useSWR from "swr";
+import { useSession } from "next-auth/react";
+import useMutation from "./libs/client/useMutation";
+import { useEffect } from "react";
 
 export interface ProductWithFavsCount extends Product{
   _count:{
@@ -14,11 +17,24 @@ interface ProductReponse {
   ok:Boolean;
   products: ProductWithFavsCount[];
 }
-
+interface loginMutation {
+  ok: Boolean;
+}
 
 const Home: NextPage = () => {
 
   const { data } = useSWR<ProductReponse>("/api/products");
+  const { data: session } = useSession();
+
+  //useMutation
+  const [login, { loading, data:tokenData, error }] =
+    useMutation<loginMutation>("/api/users/token");
+
+  useEffect(()=>{
+    if (session) {
+      login(session.user.email);
+    }
+  },[]);
 
   return (
     <div>

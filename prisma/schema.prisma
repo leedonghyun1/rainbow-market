@@ -60,6 +60,7 @@ model User {
   tokens        Token[]
   favorites     Favorite[]
   messages Message[]
+  room Room[]
 }
 
 model VerificationToken {
@@ -84,6 +85,8 @@ model Product {
   description String? @db.Text
   favorites Favorite[]
   message Message[]
+  room Room[]
+  @@unique([id])
 }
 
 model Favorite {
@@ -95,6 +98,7 @@ model Favorite {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model Message {
   id        String      @id @default(cuid())
   createdAt DateTime @default(now())
@@ -104,5 +108,22 @@ model Message {
   message   String   @db.MediumText
   product    Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId  String
+  room    Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId  String
+}
+
+model Room {
+  id             String    @id @default(cuid())
+  name           String    
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  readOrNot      Boolean?
+  lastChat       String?
+  timeOfLastChat DateTime?
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String 
+  product    Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  String 
+  message Message[]
 }
 

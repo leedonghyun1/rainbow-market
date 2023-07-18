@@ -6,59 +6,92 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import useMutation from "pages/libs/client/useMutation";
 import useUser from "pages/libs/client/useUser";
-import { Product } from "@prisma/client";
+import { Product, Room, User } from "@prisma/client";
 import Layout from "pages/components/layout";
-
+import { io } from "socket.io-client";
+let socket;
 interface ProductMessage {
   message: string;
   id: string;
   user: {
-    image?:string;
-    id:string
-  }
+    image?: string;
+    id: string;
+  };
 }
 
 interface ProductWithMessage extends Product {
-  message: ProductMessage[]
+  message: ProductMessage[];
 }
 
 interface ProductResponse {
-  ok:boolean;
-  product : ProductWithMessage;
+  ok: boolean;
+  product: ProductWithMessage;
 }
 
 interface MessageFrom {
-  message: string
+  message: string;
 }
 
 const ChatDetail: NextPage = () => {
   const router = useRouter();
-  const {user} = useUser();
+  const { user } = useUser();
   const { data, mutate } = useSWR<ProductResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null,
     { refreshInterval: 1000 }
   );
   const { register, handleSubmit, reset } = useForm<MessageFrom>();
-  const [ sendMessage, { loading, data:sendMessageData }] = useMutation(`/api/products/${router.query.id}/messages`);
-  const onValid=(message:MessageFrom)=>{
+  const [sendMessage, { loading, data: sendMessageData }] = useMutation(
+    `/api/products/${router.query.id}/messages`
+  );
+
+  useEffect(() => {
+    const socketInitializer = () => {
+      void fetch("/api/chat/server");
+    };
+    socketInitializer();
+
+    socket = io();
+    socket.emit("enter_room", router.query.id, user.id, data);
+  }, []);
+
+  const onValid = (message: MessageFrom) => {
     if (loading) return;
-    mutate(
-      (prev) =>
-        prev &&
-        ({
-          ...prev,
-          product: {
-            ...prev.product,
-            message: [
-              ...prev.product.message,
-              { id: Date.now(), message: message.message, user: { ...user } },
-            ],
-          },
-        } as any)
-    , false);
-    sendMessage(message);
+    //1초마다 mutate
+    // mutate(
+    //   (prev) =>
+    //     prev &&
+    //     ({
+    //       ...prev,
+    //       product: {
+    //         ...prev.product,
+    //         message: [
+    //           ...prev.product.message,
+    //           { id: Date.now(), message: message.message, user: { ...user } },
+    //         ],
+    //       },
+    //     } as any)
+    // , false);
+    socket.emit("new_message", router.query.id, user.email, data, message);
+    socket.on("receive_message", () => {
+      mutate(
+        (newMessage) =>
+          newMessage &&
+          ({
+            ...newMessage,
+            product: {
+              ...newMessage.product,
+              message: [
+                ...newMessage.product.message,
+                { id: Date.now(), message: message.message, user: { ...user } },
+              ],
+            },
+          } as any),
+        false
+      );
+    });
+    // sendMessage(message);
     reset();
-  }
+  };
   return (
     <Layout canGoBack seoTitle={`${data?.product?.name} chat`}>
       <div className="py-10 px-4  space-y-4">

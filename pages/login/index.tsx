@@ -12,20 +12,12 @@ interface loginMutation {
 }
 
 const Login: NextPage = () => {
-  //세션 및 라우팅 관리
-  const { data: session } = useSession();
-  const router = useRouter();
-
-  //useMutation
-  const [login, { loading, data, error }] =
-    useMutation<loginMutation>("/api/users/token");
-
-  useEffect(()=>{
-    if (session) {
-      login(session.user.email);
-      router.replace("/");
-    }
-  },[router, session]);
+   //세션 및 라우팅 관리
+   const { data: session } = useSession();
+   const router = useRouter();
+   if(session){
+     router.replace("/");
+   }
 
   return (
     <div className="mt-16 px-4">
@@ -38,21 +30,21 @@ const Login: NextPage = () => {
         >
           {!session && (
             <>
-              <button onClick={() => signIn("kakao", { callbackUrl: "/" })}>
+              <button onClick={() => signIn("kakao")}>
                 <img
                   src="/images/kakao_login_large_narrow.png"
                   alt="kakao-login"
                   className="h-12 w-auto"
                 />
               </button>
-              <button onClick={() => signIn("naver", { callbackUrl: "/" })}>
+              <button onClick={() => signIn("naver")}>
                 <img
                   src="/images/naver_login_large_narrow.png"
                   alt="naver-login"
                   className="h-12 w-auto"
                 />
               </button>
-              <button onClick={() => signIn("google", { callbackUrl: "/" })}>
+              <button onClick={() => signIn("google")}>
                 <img
                   src="/images/google_login_large_narrow.png"
                   alt="naver-login"

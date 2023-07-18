@@ -19,16 +19,26 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@libs/*":["libs/*"],
-      "@components/*":["components/*"],
-      "@client/*":["client/*"],
+      "@libs/*": [
+        "libs/*"
+      ],
+      "@components/*": [
+        "components/*"
+      ],
+      "@client/*": [
+        "client/*"
+      ]
     },
+    "target": "es5"
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "pages/api/auth/[...nextauth].ts", "pages/api/chat/socketio.js"  ],
+    "**/*.tsx",
+    "pages/api/auth/[...nextauth].ts",
+    "pages/api/chat/socketio.js",
+    "pages/libs/server/js/ioServer.js"
+  ],
   "exclude": [
     "node_modules"
   ]
