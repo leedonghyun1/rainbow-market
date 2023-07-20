@@ -30,7 +30,7 @@ export default function Layout({
   return (
     <div>
       <Head>
-        <title> {seoTitle} | 무지개 슈퍼마켓</title>
+        <title>{`${seoTitle} | 무지개 슈퍼마켓`}</title>
       </Head>
       <div className="text-gray-700 bg-white text-xl w-full max-auto h-12 max-w-2xl flex items-center justify-center font-bold fixed top-0 border-b">
         {canGoBack ? (

@@ -35,7 +35,7 @@ interface MessageFrom {
 const ChatDetail: NextPage = () => {
   const router = useRouter();
   const { user } = useUser();
-  const { data, mutate } = useSWR<ProductResponse>(
+  const { data } = useSWR<ProductResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null,
     { refreshInterval: 1000 }
   );
@@ -44,14 +44,19 @@ const ChatDetail: NextPage = () => {
     `/api/products/${router.query.id}/messages`
   );
 
+
   useEffect(() => {
-    const socketInitializer = () => {
-      void fetch("/api/chat/server");
+    const socketInitializer = async () => {
+      await fetch("/api/chat/server");
     };
     socketInitializer();
-
-    socket = io();
+    socket = io("http://localhost:3000",{
+      transports: ["websocket"]
+    });
     socket.emit("enter_room", router.query.id, user.id, data);
+    socket.on("disconnect",()=>{
+      console.log("disconnected")
+    })
   }, []);
 
   const onValid = (message: MessageFrom) => {
@@ -71,23 +76,24 @@ const ChatDetail: NextPage = () => {
     //       },
     //     } as any)
     // , false);
+    
     socket.emit("new_message", router.query.id, user.email, data, message);
     socket.on("receive_message", () => {
-      mutate(
-        (newMessage) =>
-          newMessage &&
-          ({
-            ...newMessage,
-            product: {
-              ...newMessage.product,
-              message: [
-                ...newMessage.product.message,
-                { id: Date.now(), message: message.message, user: { ...user } },
-              ],
-            },
-          } as any),
-        false
-      );
+    //  mutate(
+    //     (newMessage) =>
+    //       newMessage &&
+    //       ({
+    //         ...newMessage,
+    //         product: {
+    //           ...newMessage.product,
+    //           message: [
+    //             ...newMessage.product.message,
+    //             { id: Date.now(), message: message.message, user: { ...user } },
+    //           ],
+    //         },
+    //       } as any),
+    //     false
+    //   );
     });
     // sendMessage(message);
     reset();

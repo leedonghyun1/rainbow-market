@@ -1,12 +1,26 @@
 import { Server } from "socket.io";
 import client from "pages/libs/server/client";
-import products from "../products";
 
-const SocketHandler = (req, res) => {
-  const io = new Server(res.socket.server);
+const SocketHandler = (_, res) => {
+  const io = new Server(res.socket.server,{
+      cors: {
+          origin: "http://localhost:3000",
+          methods: ["GET", "POST"],
+          credentials: true,
+      }
+  });
   const roomName = Math.floor(10000 + Math.random() * 900000) + "";
+  io.use((socket, next)=>{
+    try{
+      console.log("middleware is running");
+      socket.data.age=25;
+      next();
+    }catch(error){
+      console.error("error : ", error);
+      next(new Error("socket.io middleware error"));
+    }
+  })
   io.on("connect", (socket) => {
-
     socket.on("enter_room", async (routerId, userId, data) => {
       const roomCheck = await client.room.findFirst({
         where: {
@@ -34,6 +48,7 @@ const SocketHandler = (req, res) => {
       }
     });
     socket.on("new_message", async (routerId, userEmail, data, message) => {
+      
       const roomCheck = await client.room.findFirst({
         where: {
           productId: routerId + "",
@@ -70,7 +85,6 @@ const SocketHandler = (req, res) => {
       })
       socket.emit("receive_message");
     });
-  
   });
   res.end();
 };
