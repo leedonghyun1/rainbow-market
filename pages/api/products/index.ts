@@ -3,7 +3,7 @@ import withHandler from "pages/libs/server/withHandler";
 import { withApiSession } from "pages/libs/server/withSession";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if(req.method == "POST"){
+  if(req.method === "POST"){
     const {
       body: { name, price, description, link, videoId},
       session: { user },
@@ -27,7 +27,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       product,
     })
   }
-  if(req.method == "GET"){
+  if(req.method === "GET"){
     const products = await client.product.findMany({
       include:{
         _count:{
@@ -37,6 +37,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         },
       },
     })
+
     res.json({
       ok:true,
       products,

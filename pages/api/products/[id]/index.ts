@@ -41,9 +41,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         contains: productName;
       }
     });
+
+    const isLiked = Boolean(
+      await client.favorite.findFirst({
+        where:{
+          productId: product.id,
+          userId: user.id,
+        },
+        select:{
+          id:true,
+        }
+      })
+    )
     res.json({
       ok: true,
       product,
+      isLiked,
     });
   }
 }

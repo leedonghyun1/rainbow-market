@@ -15,6 +15,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         contains: find,
       },
     },
+    include:{
+      _count:{
+        select:{
+          favorites:true,
+        }
+      },
+    },
   });
 
   res.json({

@@ -11,7 +11,7 @@ import { after } from "node:test";
 
 export interface ProductWithFavsCount extends Product {
   _count: {
-    favorite: number;
+    favorites: number;
   };
 }
 
@@ -34,7 +34,7 @@ const Home: NextPage = () => {
     { data: searchData, loading: searchLoading, error: searchError },
   ] = useMutation<ProductReponse>("/api/search");
 
-  const [beforSearch, afterSearch] = useState(false);
+  const [beforeSearch, afterSearch] = useState(false);
 
   useEffect(() => {
     if (session) {
@@ -47,6 +47,7 @@ const Home: NextPage = () => {
     reset();
     afterSearch(true);
   }
+  console.log("search : ",searchData)
   return (
     <div>
       <Layout seoTitle="메인 페이지" hasTabBar canGoBack title="홈">
@@ -58,13 +59,13 @@ const Home: NextPage = () => {
               type="text"
               className="w-1/2 h-auto rounded-2xl self-center hover:outline-purple-400"
             />
-            {beforSearch === false
+            {beforeSearch === false
               ? data?.products?.map((product) => (
                   <Item
                     id={product.id}
                     title={product.name}
                     price={product.price}
-                    favorite={product._count?.favorite || 0}
+                    favorite={product._count?.favorites || 0}
                     key={product.id}
                     image={product.uploadVideo}
                   />
@@ -75,7 +76,7 @@ const Home: NextPage = () => {
                     id={product.id}
                     title={product.name}
                     price={product.price}
-                    favorite={product._count?.favorite || 0}
+                    favorite={product._count?.favorites || 0}
                     key={product.id}
                     image={product.uploadVideo}
                   />
@@ -85,7 +86,7 @@ const Home: NextPage = () => {
                     id={product.id}
                     title={product.name}
                     price={product.price}
-                    favorite={product._count?.favorite || 0}
+                    favorite={product._count?.favorites || 0}
                     key={product.id}
                     image={product.uploadVideo}
                   />
