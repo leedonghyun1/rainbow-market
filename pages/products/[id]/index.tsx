@@ -1,6 +1,5 @@
 import { Product, User } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Button from "pages/components/button";
@@ -8,6 +7,7 @@ import Layout from "pages/components/layout";
 import useMutation from "pages/libs/client/useMutation";
 import useUser from "pages/libs/client/useUser";
 import cls from "pages/libs/client/utils";
+import { useEffect } from "react";
 import useSWR from "swr";
 
 interface ProductWitheUser extends Product {
@@ -20,6 +20,10 @@ interface ItemDetailResponse {
   relatedProducts:Product[];
   isLiked: boolean;
 }
+interface ItemDeleteResponse {
+  ok:boolean;
+  deleteProduct : Product;
+}
 
 export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
   const router = useRouter();
@@ -28,12 +32,25 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
     router.query.id ? `/api/products/${router.query.id}` : null
   );
   const [ toggleFav ] = useMutation(`/api/products/${router.query.id}/favorite`);
+  const [ deletePost,{ data:postDeleteData } ] = useMutation<ItemDeleteResponse>(`/api/products/${router.query.id}`);
 
   const onFavClicked = () => {
     if (!data) return;
     boundMutate((prev) => prev && { ...prev, isLiked: !prev.isLiked }, false);
-    toggleFav({})
+    toggleFav({});
   };
+  const deletePostClicked = () => {
+    try{
+      deletePost({});
+      if (postDeleteData !== null) {
+        router.push("/");
+      }
+    }catch(error){
+      console.log("delete post error : ", error);
+    }
+  };
+
+
   return (
     <Layout canGoBack seoTitle="상품상세" hasTabBar title="슈퍼">
       {data ? (
@@ -67,7 +84,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
                 src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user?.image}/avatar`}
                 width={40}
                 height={40}
-                className="w-12 h-12 rounded-full "
+                className="w-12 h-12 rounded-full"
                 alt={""}
               />
             ) : (
@@ -160,6 +177,17 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               ))}
             </div>
           </div>
+          {user && user.id === data.product.userId ? (
+            <div>
+              <Button
+                className="w-1/2"
+                text="게시글 삭제하기"
+                onClick={() => {
+                  deletePostClicked();
+                }}
+              />
+            </div>
+          ) : null}
         </div>
       ) : (
         "Loading..."

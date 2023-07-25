@@ -47,7 +47,7 @@ const Home: NextPage = () => {
     reset();
     afterSearch(true);
   }
-  console.log("search : ",searchData)
+ 
   return (
     <div>
       <Layout seoTitle="메인 페이지" hasTabBar canGoBack title="홈">

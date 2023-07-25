@@ -8,7 +8,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     session: { user },
   } = req;
 
-  if (req.method == "GET") {
+  if (req.method === "GET") {
     const product = await client.product.findUnique({
       where: {
         id: id + "",
@@ -70,11 +70,31 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       relatedProducts,
     });
   }
+  if (req.method === "POST"){
+ 
+    const deleteProduct = await client.product.findUnique({
+      where:{
+        id: id+"",
+      }
+    })
+   
+    if(deleteProduct){
+       await client.product.delete({
+         where: {
+           id: deleteProduct.id + "",
+         },
+       });
+    }
+    res.json({
+      ok:true,
+      deleteProduct,
+    })
+  }
 }
 
 export default withApiSession(
   withHandler({
-    methods: ["GET"],
+    methods: ["POST","GET"],
     handler,
     isPrivate: true,
   })
