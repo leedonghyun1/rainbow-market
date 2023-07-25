@@ -39,10 +39,11 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
     boundMutate((prev) => prev && { ...prev, isLiked: !prev.isLiked }, false);
     toggleFav({});
   };
-  const deletePostClicked = () => {
+  const deletePostClicked = async() => {
     try{
       deletePost({});
-      if (postDeleteData !== null) {
+      const deleteVideoResponse = await(await fetch(`/api/video/${router.query.id}/deleteVideo`)).json();
+      if (postDeleteData !== null && deleteVideoResponse.ok === true) {
         router.push("/");
       }
     }catch(error){
