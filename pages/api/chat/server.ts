@@ -12,7 +12,6 @@ const SocketHandler = (_, res) => {
   const roomName = Math.floor(10000 + Math.random() * 900000) + "";
   io.use((socket, next)=>{
     try{
-      console.log("middleware is running");
       socket.data.age=25;
       next();
     }catch(error){
@@ -21,14 +20,13 @@ const SocketHandler = (_, res) => {
     }
   })
   io.on("connect", (socket) => {
-    socket.on("enter_room", async (routerId, userId, data) => {
+    socket.on("enter_room", async(routerId, userId, data) => {
       const roomCheck = await client.room.findFirst({
         where: {
           userId: userId + "",
           productId: routerId + "",
         },
       });
-      // room 생성 및 존재하면 생성x
       if (!roomCheck) {
         const roomCreate = await client.room.create({
           data: {

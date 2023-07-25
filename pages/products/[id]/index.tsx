@@ -1,4 +1,6 @@
 import { Product, User } from "@prisma/client";
+import { NextApiRequest, NextApiResponse } from "next";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Button from "pages/components/button";
@@ -15,9 +17,10 @@ interface ItemDetailResponse {
   product: ProductWitheUser;
 }
 
-export default function ItemDetails() {
+export default function ItemDetails(req:NextApiRequest, res:NextApiResponse) {
   const router = useRouter();
   const { user } = useUser();
+  const { data:session } = useSession();
   const { data } = useSWR<ItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
@@ -39,7 +42,16 @@ export default function ItemDetails() {
               </div>
             )}
           </div>
-          <Button large text="사장님에게 채팅톡톡" onClick={()=>{router.push(`/chat/${data?.product?.id}`)}}/>
+          {user && user.id !== data.product.userId ? (
+            <Button
+              large
+              text="사장님에게 채팅톡톡"
+              onClick={() => {
+                router.push(`/chat/${data?.product?.id}`);
+              }}
+            />
+          ) : null}
+
           <div className="flex justify-between items-center relative mt-5">
             {user?.image ? (
               <Image

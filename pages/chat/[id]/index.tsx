@@ -44,58 +44,26 @@ const ChatDetail: NextPage = () => {
     `/api/products/${router.query.id}/messages`
   );
 
-
   useEffect(() => {
     const socketInitializer = async () => {
-      await fetch("/api/chat/server");
+      void fetch("/api/chat/server");
     };
     socketInitializer();
     socket = io("http://localhost:3000",{
       transports: ["websocket"]
     });
-    socket.emit("enter_room", router.query.id, user.id, data);
+    socket.emit("enter_room", router.query.id, user?.id, data);
     socket.on("disconnect",()=>{
       console.log("disconnected")
     })
   }, []);
 
+
   const onValid = (message: MessageFrom) => {
     if (loading) return;
-    //1초마다 mutate
-    // mutate(
-    //   (prev) =>
-    //     prev &&
-    //     ({
-    //       ...prev,
-    //       product: {
-    //         ...prev.product,
-    //         message: [
-    //           ...prev.product.message,
-    //           { id: Date.now(), message: message.message, user: { ...user } },
-    //         ],
-    //       },
-    //     } as any)
-    // , false);
-    
     socket.emit("new_message", router.query.id, user.email, data, message);
     socket.on("receive_message", () => {
-    //  mutate(
-    //     (newMessage) =>
-    //       newMessage &&
-    //       ({
-    //         ...newMessage,
-    //         product: {
-    //           ...newMessage.product,
-    //           message: [
-    //             ...newMessage.product.message,
-    //             { id: Date.now(), message: message.message, user: { ...user } },
-    //           ],
-    //         },
-    //       } as any),
-    //     false
-    //   );
     });
-    // sendMessage(message);
     reset();
   };
   return (
@@ -116,9 +84,9 @@ const ChatDetail: NextPage = () => {
             <div className="py-10 pb-16 h-[50vh] overflow-y-scroll  px-4 space-y-4">
               {data?.product.message.map((messages) => (
                 <Message
-                  key={messages.id}
-                  message={messages.message}
-                  reversed={messages.user.id === user.id ? true : false}
+                  key={messages?.id}
+                  message={messages?.message}
+                  reversed={messages?.user?.id === user?.id ? true : false}
                 />
               ))}
             </div>

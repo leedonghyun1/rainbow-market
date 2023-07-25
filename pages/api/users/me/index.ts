@@ -3,6 +3,7 @@ import withHandler from "pages/libs/server/withHandler";
 import { withApiSession } from "pages/libs/server/withSession";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
+
   if (req.method === "GET") {
     const {
       session: { user },
