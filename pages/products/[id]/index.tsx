@@ -17,6 +17,7 @@ interface ProductWitheUser extends Product {
 interface ItemDetailResponse {
   ok: boolean;
   product: ProductWitheUser;
+  relatedProducts:Product[];
   isLiked: boolean;
 }
 
@@ -33,7 +34,6 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
     boundMutate((prev) => prev && { ...prev, isLiked: !prev.isLiked }, false);
     toggleFav({})
   };
-
   return (
     <Layout canGoBack seoTitle="상품상세" hasTabBar title="슈퍼">
       {data ? (
@@ -139,8 +139,31 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               <span>{data?.product?.description}</span>
             </div>
           </div>
+          <div className="mt-10">
+            <h2 className="text-lg font-bold text-gray-500">비슷한 관심상품</h2>
+            <div className="mt-6 grid grid-cols-2 gap-4">
+              {data?.relatedProducts.map((relatedProd) => (
+                <div key={relatedProd?.id}>
+                  {relatedProd?.uploadVideo ? (
+                    <img
+                      className="w-auto h-56 bg-gray-400 rounded-md"
+                      src={`https://customer-odn2bz8flwihe8yi.cloudflarestream.com/${relatedProd?.uploadVideo}/thumbnails/thumbnail.jpg?time=1s&width=224`}
+                    />
+                  ) : (
+                    <div className="h-56 w-full mb-4 bg-slate-300 rounded-md" />
+                  )}
+                  <h3 className="text-gray-700 -mb-1">{relatedProd?.name}</h3>
+                  <span className="text-sm font-medium text-gray-900">
+                    {relatedProd?.price}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      ) : null}
+      ) : (
+        "Loading..."
+      )}
     </Layout>
   );
 }

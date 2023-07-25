@@ -36,12 +36,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     });
     // 유사상품 sorting 조건
-    const terms = product?.name.split(" ").map((productName) => {
+    const terms = product?.name.split(" ").map((productName) => ({
       name: {
-        contains: productName;
+        contains: productName,
       }
-    });
+    }));
 
+    const relatedProducts = await client.product.findMany({
+      where:{
+        OR: terms,
+        AND:{
+          id:{
+            not:product?.id
+          },
+        },
+      },
+    })
     const isLiked = Boolean(
       await client.favorite.findFirst({
         where:{
@@ -57,6 +67,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       ok: true,
       product,
       isLiked,
+      relatedProducts,
     });
   }
 }
