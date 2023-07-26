@@ -8,12 +8,13 @@ import TextArea from "pages/components/textarea";
 import useMutation from "pages/libs/client/useMutation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { ItemDeleteResponse } from ".";
 
 interface UploadProductProps {
-  name: string;
-  price: number;
-  description: string;
-  link: string;
+  name?: string;
+  price?: number;
+  description?: string;
+  link?: string;
   video?: FileList;
   formErrors?: string;
 }
@@ -24,44 +25,62 @@ interface UploadProudctMutation {
 }
 
 export default function Upload() {
-
-  const { register, handleSubmit, watch } = useForm<UploadProductProps>();
+  
+  
   const router = useRouter();
+  const { register, handleSubmit, watch } = useForm<UploadProductProps>();
+  let [videoPreview, setVideoPreview] = useState("");
+  const video = watch("video")
 
-  const [ videoPreview, setVideoPreview ] = useState("");
-  const video = watch("video");
-
-  useEffect(()=>{
-    if(video && video.length>0){
-      const file = video[0]
+  useEffect(() => {
+    if (video && video.length > 0) {
+      const file = video[0];
       setVideoPreview(URL.createObjectURL(file));
     }
-  },[video])
+    
+  }, [video]);
 
- const [uploadProduct, { loading, data }] =
+  const [uploadProduct, { loading, data }] =
     useMutation<UploadProudctMutation>("/api/products/");
+
+  const [deletePost, { data: postDeleteData }] =
+    useMutation<ItemDeleteResponse>(`/api/products/${router.query.id}`);
+
   const onValid = async ({
     name,
     price,
     description,
     link,
-    video
+    video,
   }: UploadProductProps) => {
     if (loading) return;
-    //upload video
-    if (video && video.length > 0) {
-      const { uploadURL, uid } = await (await fetch("/api/video/videoFile")).json();
 
+    if (video && video.length > 0 ) {
       const form = new FormData();
       form.append("file", video[0]);
 
-      //video upload and response check
-      const uploadResult = await fetch(uploadURL, {
-        method: "POST",
-        body: form,
-      });
+      try {
+        deletePost({});
+        const deleteVideoResponse = await(
+          await fetch(`/api/video/${router.query.id}/deleteVideo`)
+        ).json();
+        try {
+          const { uploadURL, uid } = await(
+            await fetch("/api/video/videoFile")
+          ).json();
 
-      uploadProduct({ name, price, description, link, videoId: uid });
+          const uploadResult = await fetch(uploadURL, {
+            method: "POST",
+            body: form,
+          });
+          
+          uploadProduct({ name, price, description, link, videoId: uid });
+        } catch (error) {
+          console.log("video change create error : ", error);
+        }
+      } catch (error) {
+        console.log("video change delete error : ", error);
+      }
     } else {
       uploadProduct({ name, price, description, link });
     }
@@ -74,14 +93,30 @@ export default function Upload() {
   }, [data, router]);
 
   return (
-    <Layout canGoBack title="슈퍼 등록" seoTitle="슈퍼 등록" hasTabBar>
+    <Layout canGoBack title="슈퍼 수정" seoTitle="슈퍼 수정" hasTabBar>
       <form className="p-4 space-y-4" onSubmit={handleSubmit(onValid)}>
         <div>
           {videoPreview ? (
-            <video
-              src={videoPreview}
-              className="w-full mt-10 h-auto rounded-md"
-            />
+            <>
+              <iframe
+                src={videoPreview}
+                className="h-80 w-full rounded-md mt-10 cursor-pointer"
+                allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+              ></iframe>
+              <div className="mt-3 flex justify-end">
+                <label>
+                  <span className="bg-purple-400 text-sm rounded-xl px-5 py-2 text-white cursor-pointer hover:font-bold">
+                    변경
+                  </span>
+                  <input
+                    {...register("video")}
+                    className="hidden w-5 bg-gray-400"
+                    type="file"
+                    accept="video/*"
+                  />
+                </label>
+              </div>
+            </>
           ) : (
             <label className="w-full mt-10 cursor-pointer text-gray-600 hover:border-purple-600 hover:text-purple-600 flex items-center justify-center border-2 border-dashed border-gray-300 h-48 rounded-md">
               <svg
@@ -108,32 +143,32 @@ export default function Upload() {
           )}
         </div>
         <Input
-          register={register("name", { required: true })}
-          required
+          register={register("name")}
+          required={false}
           label="물품명"
           name="name"
           type="text"
           kind="text"
         ></Input>
         <Input
-          register={register("price", { required: true })}
-          required
+          register={register("price")}
+          required={false}
           label="가격"
           name="price"
           kind="price"
           type="text"
         ></Input>
         <Input
-          register={register("link", { required: true })}
-          required
+          register={register("link")}
+          required={false}
           label="상품구매링크"
           name="link"
           type="text"
           kind="text"
         ></Input>
         <TextArea
-          register={register("description", { required: true })}
-          required
+          register={register("description")}
+          required={false}
           label="상품 설명"
           name="description"
         ></TextArea>

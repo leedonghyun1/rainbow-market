@@ -16,21 +16,25 @@ async function handler(req:NextApiRequest, res:NextApiResponse) {
 
   const { CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN_VIDEO } = env;
   const endpoint = `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/stream/${product.uploadVideo}`;
-  const response = await fetch(endpoint, {
-    method: "DELETE",
+  const createrId = { "creator": `${product.id}`}
+  const data = {createrId};
+  const response = await( await fetch(endpoint, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${CLOUDFLARE_API_TOKEN_VIDEO}`,
     },
-  });
+    body: JSON.stringify(data),
+  })).json();
+
   res.json({
     ok:true,
-    ...response
+    ...response.result
   });
 }
 export default withApiSession(
   withHandler({
-    methods: ["DELETE","GET"],
+    methods: ["POST","GET"],
     handler,
     isPrivate:true,
   })

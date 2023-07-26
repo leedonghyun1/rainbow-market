@@ -20,7 +20,7 @@ interface ItemDetailResponse {
   relatedProducts:Product[];
   isLiked: boolean;
 }
-interface ItemDeleteResponse {
+export interface ItemDeleteResponse {
   ok:boolean;
   deleteProduct : Product;
 }
@@ -51,6 +51,10 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
     }
   };
 
+  const changePostClicked = async() =>{
+    router.replace(`/products/${router.query.id}/edit`);
+  }
+
 
   return (
     <Layout canGoBack seoTitle="상품상세" hasTabBar title="슈퍼">
@@ -68,6 +72,14 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
                 <div className="h-96 w-full bg-gray-600 rounded-lg" />
               </div>
             )}
+          </div>
+          <div className="flex flex-row justify-end">
+            <button
+              className="p-2 bg-slate-400 text-white rounded-md text-sm hover:bg-purple-500 hover:text-white"
+              onClick={changePostClicked}
+            >
+              게시글 변경
+            </button>
           </div>
           {user && user.id !== data.product.userId ? (
             <Button
