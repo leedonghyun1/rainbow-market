@@ -9,6 +9,7 @@ import useMutation from "pages/libs/client/useMutation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ItemDeleteResponse } from ".";
+import useSWR from "swr";
 
 interface UploadProductProps {
   name?: string;
@@ -19,32 +20,32 @@ interface UploadProductProps {
   formErrors?: string;
 }
 
-interface UploadProudctMutation {
+interface productResponse {
   ok: boolean;
   product: Product;
 }
 
 export default function Upload() {
-  
-  
   const router = useRouter();
   const { register, handleSubmit, watch } = useForm<UploadProductProps>();
+
   let [videoPreview, setVideoPreview] = useState("");
-  const video = watch("video")
+  const video = watch("video");
 
   useEffect(() => {
     if (video && video.length > 0) {
       const file = video[0];
       setVideoPreview(URL.createObjectURL(file));
     }
-    
   }, [video]);
 
   const [uploadProduct, { loading, data }] =
-    useMutation<UploadProudctMutation>("/api/products/");
+    useMutation<productResponse>("/api/products/");
 
   const [deletePost, { data: postDeleteData }] =
     useMutation<ItemDeleteResponse>(`/api/products/${router.query.id}`);
+
+  const { data: productData } = useSWR<productResponse>(`/api/products/${router.query.id}`);
 
   const onValid = async ({
     name,
@@ -55,25 +56,23 @@ export default function Upload() {
   }: UploadProductProps) => {
     if (loading) return;
 
-    if (video && video.length > 0 ) {
+    if (video && video.length > 0) {
       const form = new FormData();
       form.append("file", video[0]);
 
       try {
         deletePost({});
-        const deleteVideoResponse = await(
+        const deleteVideoResponse = await (
           await fetch(`/api/video/${router.query.id}/deleteVideo`)
         ).json();
         try {
-          const { uploadURL, uid } = await(
+          const { uploadURL, uid } = await (
             await fetch("/api/video/videoFile")
           ).json();
-
           const uploadResult = await fetch(uploadURL, {
             method: "POST",
             body: form,
           });
-          
           uploadProduct({ name, price, description, link, videoId: uid });
         } catch (error) {
           console.log("video change create error : ", error);
@@ -149,6 +148,7 @@ export default function Upload() {
           name="name"
           type="text"
           kind="text"
+          value={productData.product.name}
         ></Input>
         <Input
           register={register("price")}
@@ -157,6 +157,7 @@ export default function Upload() {
           name="price"
           kind="price"
           type="text"
+          value={`${productData.product.price}`}
         ></Input>
         <Input
           register={register("link")}
@@ -165,12 +166,14 @@ export default function Upload() {
           name="link"
           type="text"
           kind="text"
+          value={`${productData.product.link}`}
         ></Input>
         <TextArea
           register={register("description")}
           required={false}
           label="상품 설명"
           name="description"
+          value={`${productData.product.description}`}
         ></TextArea>
         <Button text={loading ? "등록중..." : "등록"}></Button>
       </form>
