@@ -19,7 +19,7 @@ export default function Item({ id, title, price, favorite, image }: ItemProps) {
     >
       <div className="flex space-x-4">
         <img
-          className="w-20 h-auto bg-gray-400 rounded-md"
+          className="w-20 h-auto bg-gray-400 rounded-md shadow-md"
           src={`https://customer-odn2bz8flwihe8yi.cloudflarestream.com/${image}/thumbnails/thumbnail.jpg?time=1s&height=48`}
         />
         <div className="pt-2 flex flex-col">

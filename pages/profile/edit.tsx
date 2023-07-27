@@ -35,6 +35,8 @@ export default function Edit() {
   },[user, setValue]);
   // 유저 프로필 업데이트
   const [editProfile, { data, loading }] = useMutation("/api/users/me");
+  const [deleteProfile, { data: deleteData, loading: deleteDataLoading }] =
+    useMutation("/api/users/delete");
   const onValid = async ({ phone, name, image }: EditProfileForm) => {
     if (phone === "" && name === "" ) {
       return setError("formErrors", {
@@ -82,7 +84,13 @@ export default function Edit() {
               className="w-14 h-14 rounded-full bg-slate-500"
             />
           ) : user?.image ? (
-            <Image src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user?.image}/avatar`} width={48} height={48} className="w-14 h-14 rounded-full" alt={""}/>
+            <Image
+              src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user?.image}/avatar`}
+              width={48}
+              height={48}
+              className="w-14 h-14 rounded-full"
+              alt={""}
+            />
           ) : (
             <div className="w-14 h-14 rounded-full bg-slate-500" />
           )}
