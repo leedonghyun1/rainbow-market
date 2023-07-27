@@ -82,7 +82,9 @@ export default function Edit() {
               src={imagePreview}
               className="w-14 h-14 rounded-full bg-slate-500"
             />
-          ) : user?.image ? (
+          ) : user?.image.startsWith("https") ? (
+            <div className="w-14 h-14 rounded-full bg-slate-500" />
+          ) : (
             <Image
               src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user?.image}/avatar`}
               width={48}
@@ -90,8 +92,6 @@ export default function Edit() {
               className="w-14 h-14 rounded-full"
               alt={""}
             />
-          ) : (
-            <div className="w-14 h-14 rounded-full bg-slate-500" />
           )}
           <label
             htmlFor="picture"
@@ -114,7 +114,6 @@ export default function Edit() {
           name="nickName"
           type="text"
           kind="text"
-          
         />
         <Input
           register={register("email")}

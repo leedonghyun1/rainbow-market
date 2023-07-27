@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Button from "pages/components/button";
@@ -15,10 +16,15 @@ interface EditProfileForm {
   phone?: string;
   formErrors?: string;
 }
+interface DeleteProfileResponse{
+  ok:boolean;
+  user:User;
+}
 
 export default function Edit() {
   // 유저 프로필 현재 상태 표시
   const { user } = useUser();
+  const router = useRouter();
   const {
     register,
     setValue,
@@ -31,10 +37,16 @@ export default function Edit() {
     if (user?.phone) setValue("phone", user.phone);
   },[user, setValue]);
   // 유저 프로필 업데이트
-  const [deleteProfile, { data, loading }] = useMutation("/api/users/me/delete");
+  const [deleteProfile, { data, loading }] = useMutation<DeleteProfileResponse>("/api/users/me/delete");
 
   const onDelete = async () => {
-    deleteProfile({});
+    try {
+      deleteProfile({});
+      const deleteProfileResponse = await fetch(`/api/users/me/delete`);
+      router.replace("/logout");
+    } catch (error) {
+      console.log("deletProfileError : ", error);
+    }
   };
 
   return (
