@@ -35,8 +35,7 @@ export default function Edit() {
   },[user, setValue]);
   // 유저 프로필 업데이트
   const [editProfile, { data, loading }] = useMutation("/api/users/me");
-  const [deleteProfile, { data: deleteData, loading: deleteDataLoading }] =
-    useMutation("/api/users/delete");
+
   const onValid = async ({ phone, name, image }: EditProfileForm) => {
     if (phone === "" && name === "" ) {
       return setError("formErrors", {
@@ -115,6 +114,7 @@ export default function Edit() {
           name="nickName"
           type="text"
           kind="text"
+          
         />
         <Input
           register={register("email")}

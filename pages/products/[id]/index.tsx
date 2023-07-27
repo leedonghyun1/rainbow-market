@@ -73,14 +73,16 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               </div>
             )}
           </div>
-          <div className="flex flex-row justify-end">
-            <button
-              className="p-2 bg-slate-400 text-white rounded-md text-sm hover:bg-purple-500 hover:text-white"
-              onClick={changePostClicked}
-            >
-              게시글 변경
-            </button>
-          </div>
+          {user && user.id === data.product.userId ? (
+            <div className="flex flex-row justify-end">
+              <button
+                className="p-2 bg-slate-400 text-white rounded-md text-sm hover:bg-purple-500 hover:text-white"
+                onClick={changePostClicked}
+              >
+                게시글 변경
+              </button>
+            </div>
+          ) : null}
           {user && user.id !== data.product.userId ? (
             <Button
               large
@@ -92,9 +94,9 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
           ) : null}
 
           <div className="flex justify-between items-center relative mt-5">
-            {user?.image ? (
+            {data?.product?.user?.image ? (
               <Image
-                src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${user?.image}/avatar`}
+                src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${data.product.user.image}/avatar`}
                 width={40}
                 height={40}
                 className="w-12 h-12 rounded-full"

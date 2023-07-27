@@ -9,6 +9,7 @@ interface InputProps {
   required: boolean;
   type: string;
   value?: string | number;
+  disabled? : boolean;
 }
 export default function Input({
   register,
@@ -17,6 +18,7 @@ export default function Input({
   required,
   kind = "text",
   value,
+  disabled,
   type,
 }: InputProps) {
   return (
@@ -36,6 +38,7 @@ export default function Input({
             type="type"
             className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-600 focus:border-purple-600"
             value={value}
+            disabled={disabled}
           />
         </div>
       ) : null}
@@ -48,6 +51,7 @@ export default function Input({
             type="type"
             className="appearance-none w-full px-3 pl-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-600 focus:border-purple-600"
             value={value}
+            disabled={disabled}
           />
           <div className="absolute right-0 pointer-events-none pr-3 flex items-center">
             <span className="text-gray-500">KRW</span>
@@ -64,6 +68,7 @@ export default function Input({
             type="type"
             {...register}
             className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md rounded-l-none shadow-sm placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+            disabled={disabled}
           />
         </div>
       ) : null}

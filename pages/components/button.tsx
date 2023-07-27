@@ -3,6 +3,7 @@ import cls from "../libs/client/utils";
 interface ButtonProps {
   large?: boolean;
   text: string;
+
   [key: string]: any;
 }
 
@@ -11,7 +12,7 @@ export default function Button({
   onClick,
   text,
   ...rest
-}:ButtonProps){
+}: ButtonProps) {
   return (
     <button
       {...rest}
