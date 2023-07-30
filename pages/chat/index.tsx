@@ -23,7 +23,7 @@ const Chats: NextPage = () => {
   const { user } = useUser();
   const { data } = useSWR<RoomListResponse>("/api/rooms")
   return (
-    <Layout hasTabBar title="Chat" seoTitle="채팅내역">
+    <Layout title="Chat" seoTitle="채팅내역" hasTabBar >
       <div className="py-10 divide-y-[1px] ">
         {data?.rooms?.map((room) => (
           <Link

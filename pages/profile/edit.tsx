@@ -18,6 +18,7 @@ interface EditProfileForm {
 
 export default function Edit() {
   // 유저 프로필 현재 상태 표시
+  const router = useRouter();
   const { user } = useUser();
   const {
     register,
@@ -135,6 +136,8 @@ export default function Edit() {
           <span className="my-2 text-red-500">{errors.formErrors.message}</span>
         ) : null}
         <Button text={loading ? "변경 중..." : "프로필 변경"} />
+        <button onClick={()=>{router.push("/profile/favs")}} className="w-full bg-purple-600 hover:bg-purple-900 text-white px-4 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus: ring-red-900 focus:outline-none py-2 text-sm">나의 관심상품</button>
+        <button onClick={()=>{router.push("/profile/delete")}} className="w-full bg-red-400 hover:bg-red-600 text-white px-4 border border-transparent rounded-md shadow-sm font-medium focus:ring-2 focus:ring-offset-2 focus: ring-red-900 focus:outline-none py-2 text-sm">계정 삭제</button>
       </form>
     </Layout>
   );

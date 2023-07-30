@@ -50,13 +50,13 @@ export default function Layout({
         {session && (
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="mr-3 text-sm"
+            className="absolute mr-3 text-xs right-1 bg-slate-200 p-1 rounded-lg hover:bg-red-400 hover:text-white hover:font-bold"
           >
             Log Out
           </button>
         )}
         {!session && (
-          <button onClick={() => router.replace("/login")} className="text-sm">
+          <button onClick={() => router.replace("/login")} className="absolute mr-3 text-xs right-1 bg-slate-200 p-1 rounded-lg hover:bg-purple-400 hover:text-white hover:font-bold">
             Log In
           </button>
         )}

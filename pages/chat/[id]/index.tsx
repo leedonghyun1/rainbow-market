@@ -87,6 +87,7 @@ const ChatDetail: NextPage = () => {
                   key={messages?.id}
                   message={messages?.message}
                   reversed={messages?.user?.id === user?.id ? true : false}
+                  image={messages?.user?.image}
                 />
               ))}
             </div>
