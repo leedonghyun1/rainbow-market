@@ -40,9 +40,6 @@ const ChatDetail: NextPage = () => {
     { refreshInterval: 1000 }
   );
   const { register, handleSubmit, reset } = useForm<MessageFrom>();
-  const [sendMessage, { loading, data: sendMessageData }] = useMutation(
-    `/api/products/${router.query.id}/messages`
-  );
 
   useEffect(() => {
     const socketInitializer = async () => {
@@ -60,7 +57,6 @@ const ChatDetail: NextPage = () => {
 
 
   const onValid = (message: MessageFrom) => {
-    if (loading) return;
     socket.emit("new_message", router.query.id, user.email, data, message);
     socket.on("receive_message", () => {
     });

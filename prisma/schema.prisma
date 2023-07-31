@@ -46,6 +46,8 @@ model Token {
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model User {
@@ -88,6 +90,8 @@ model Product {
   message Message[]
   room Room[]
   @@unique([id])
+
+  @@index([userId])
 }
 
 model Favorite {
@@ -98,6 +102,8 @@ model Favorite {
   productId  String 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId, productId])
 }
 
 model Message {
@@ -111,6 +117,8 @@ model Message {
   productId  String
   room    Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId  String
+
+  @@index([userId, productId, roomId])
 }
 
 model Room {
@@ -126,5 +134,7 @@ model Room {
   product    Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId  String 
   message Message[]
+
+  @@index([userId, productId])
 }
 
