@@ -5,7 +5,7 @@ import Button from "pages/components/button";
 import Input from "pages/components/input";
 import Layout from "pages/components/layout";
 import TextArea from "pages/components/textarea";
-import useMutation from "pages/libs/client/useMutation";
+import useMutation from "libs/client/useMutation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ItemDeleteResponse } from ".";

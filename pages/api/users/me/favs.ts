@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import products from "pages/api/products";
-import withHandler from "pages/libs/server/withHandler";
-import { withApiSession } from "pages/libs/server/withSession";
+import withHandler from "libs/server/withHandler";
+import { withApiSession } from "libs/server/withSession";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
 

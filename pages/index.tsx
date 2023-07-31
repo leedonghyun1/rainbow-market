@@ -4,7 +4,7 @@ import Layout from "./components/layout";
 import { NextPage } from "next";
 import useSWR from "swr";
 import { useSession } from "next-auth/react";
-import useMutation from "./libs/client/useMutation";
+import useMutation from "../libs/client/useMutation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { after } from "node:test";

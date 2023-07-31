@@ -23,7 +23,7 @@
         "libs/*"
       ],
       "@components/*": [
-        "components/*"
+        "pages/components/*"
       ],
       "@client/*": [
         "client/*"
@@ -37,7 +37,7 @@
     "**/*.tsx",
     "pages/api/auth/[...nextauth].ts",
     "pages/api/chat/socketio.js",
-    "pages/libs/server/js/ioServer.js"
+    "libs/server/js/ioServer.js"
   ],
   "exclude": [
     "node_modules"

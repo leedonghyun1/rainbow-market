@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import client from "pages/libs/server/client";
+import client from "libs/server/client";
 
 const SocketHandler = (_, res) => {
   const io = new Server(res.socket.server,{

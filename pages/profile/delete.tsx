@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import Button from "pages/components/button";
 import Input from "pages/components/input";
 import Layout from "pages/components/layout";
-import useMutation from "pages/libs/client/useMutation";
-import useUser from "pages/libs/client/useUser";
+import useMutation from "libs/client/useMutation";
+import useUser from "libs/client/useUser";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 

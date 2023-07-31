@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth"
 import NaverProvider from "next-auth/providers/naver";
 import KakaoProvider from "next-auth/providers/kakao";
 import GoogleProvider from "next-auth/providers/google";
-import client from "pages/libs/server/client";
+import client from "libs/server/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 
 export default NextAuth({

@@ -4,9 +4,9 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import Button from "pages/components/button";
 import Layout from "pages/components/layout";
-import useMutation from "pages/libs/client/useMutation";
-import useUser from "pages/libs/client/useUser";
-import cls from "pages/libs/client/utils";
+import useMutation from "libs/client/useMutation";
+import useUser from "libs/client/useUser";
+import cls from "libs/client/utils";
 import { useEffect } from "react";
 import useSWR from "swr";
 

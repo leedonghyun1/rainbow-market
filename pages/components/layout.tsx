@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/router";
 import Script from "next/script";
-import cls from "pages/libs/client/utils";
+import cls from "libs/client/utils";
 
 export interface LayoutProps {
   seoTitle: string;

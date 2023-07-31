@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { useRouter } from "next/router";
-import useMutation from "pages/libs/client/useMutation";
+import useMutation from "libs/client/useMutation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
