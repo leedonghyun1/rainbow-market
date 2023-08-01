@@ -32,6 +32,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
               }
             }
           }
+        },
+        sold:{
+          select:{
+            saleIs:true,
+          }
         }
       },
     });

@@ -1,4 +1,4 @@
-import { Product, User } from "@prisma/client";
+import { Product, Sold } from "@prisma/client";
 import Item from "../components/item";
 import Layout from "../components/layout";
 import { NextPage } from "next";
@@ -7,12 +7,12 @@ import { useSession } from "next-auth/react";
 import useMutation from "../libs/client/useMutation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { after } from "node:test";
 
 export interface ProductWithFavsCount extends Product {
   _count: {
     favorites: number;
   };
+  sold:Sold[];
 }
 
 interface ProductReponse {
@@ -47,17 +47,16 @@ const Home: NextPage = () => {
     reset();
     afterSearch(true);
   }
- 
   return (
     <div>
-      <Layout seoTitle="메인 페이지" hasTabBar canGoBack title="홈">
+      <Layout seoTitle="슈퍼" hasTabBar canGoBack title="슈퍼">
         <form onSubmit={handleSubmit(searchItem)}>
-          <div className="flex flex-col space-y-5 py-10">
+          <div className="flex flex-col space-y-5  py-10">
             <input
               {...register("find")}
-              placeholder="검색"
+              placeholder="슈퍼 검색"
               type="text"
-              className="w-1/2 h-auto rounded-2xl self-center hover:outline-purple-400"
+              className="w-2/3 h-9 rounded-2xl self-center hover:outline-purple-400 placeholder-slate-400"
             />
             {beforeSearch === false
               ? data?.products?.map((product) => (
@@ -68,6 +67,7 @@ const Home: NextPage = () => {
                     favorite={product._count?.favorites || 0}
                     key={product.id}
                     image={product.uploadVideo}
+                    sold={product.sold[0].saleIs}
                   />
                 ))
               : searchData
@@ -79,6 +79,7 @@ const Home: NextPage = () => {
                     favorite={product._count?.favorites || 0}
                     key={product.id}
                     image={product.uploadVideo}
+                    sold={product.sold[0].saleIs}
                   />
                 ))
               : data?.products?.map((product) => (
@@ -89,6 +90,7 @@ const Home: NextPage = () => {
                     favorite={product._count?.favorites || 0}
                     key={product.id}
                     image={product.uploadVideo}
+                    sold={product.sold[0].saleIs}
                   />
                 ))}
           </div>

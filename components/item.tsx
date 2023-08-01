@@ -1,4 +1,5 @@
 
+import cls from "@libs/client/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -8,10 +9,12 @@ interface ItemProps {
   title: string;
   price: number;
   favorite: number;
-  image:string;
+  image: string;
+  sold: boolean;
 }
 
-export default function Item({ id, title, price, favorite, image }: ItemProps) {
+export default function Item({ id, title, price, favorite, image, sold}: ItemProps) {
+  console.log(sold);
   return (
     <Link
       href={`/products/${id}`}
@@ -28,6 +31,9 @@ export default function Item({ id, title, price, favorite, image }: ItemProps) {
         </div>
       </div>
       <div className="flex items-end justify-end">
+        <div className={cls("flex items-end justify-between py-1 px-6 rounded-xl text-sm mr-3", sold === false ? "bg-slate-300":"bg-purple-400")}>
+          { sold === false ? "판매중" : "판매완료"}
+        </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="1em"

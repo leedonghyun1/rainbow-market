@@ -1,44 +1,40 @@
 import { Favorite, Product } from "@prisma/client";
 import Item from "./item";
 import useSWR from "swr";
+import { ProductWithFavsCount } from "pages";
+
+interface Record {
+  id:number;
+  product:ProductWithFavsCount;
+}
+
+interface ProductListResponse {
+  [key:string]: Record[]
+}
 
 interface ProductListProps {
-  kind: "uploaded" | "favs" | "sold";
+  kind: "sold" | "purchases" | "favs";
 }
 
-interface ProdcutWithFavsCount extends Product{
-  _count: number;
-}
-
-interface FavsWithProduct extends Favorite{
-  product: ProdcutWithFavsCount;
-}
-
-interface UserReponse {
-  ok: Boolean;
-  favorites: FavsWithProduct[];
-}
 
 export default function ProductList({kind}:ProductListProps){
   
-  const { data:favsProducts } = useSWR<UserReponse>(`/api/users/me/${kind}`)
+  const { data } = useSWR<ProductListResponse>(`/api/users/me/${kind}`)
 
-  console.log(favsProducts)
+  console.log(data);
 
-  return (
+  return data ? (
     <>
-      {kind === "favs" ? favsProducts?.favorites.map((favorites) => {
-        <div className="mt-16">
-          <Item
-            id={favorites.product.id}
-            key={favorites.product.id}
-            title={favorites.product.name}
-            price={favorites.product.price}
-            favorite={favorites.product._count || 0 }
-            image={favorites.product.uploadVideo}
-          />
-        </div>;
-      }):null}
+      {data?.[kind].map((record) => (
+        <Item
+          id={record.product.id}
+          key={record.product.id}
+          title={record.product.name}
+          price={record.product.price}
+          favorite={record.product._count.favorites || 0}
+          image={record.product.uploadVideo}
+        />
+      ))}
     </>
-  );
+  ) : null;
 }

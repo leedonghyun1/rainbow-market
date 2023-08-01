@@ -1,4 +1,4 @@
-import { Product, User } from "@prisma/client";
+import { Product, Sold, User } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -7,11 +7,11 @@ import Layout from "components/layout";
 import useMutation from "libs/client/useMutation";
 import useUser from "libs/client/useUser";
 import cls from "libs/client/utils";
-import { useEffect } from "react";
 import useSWR from "swr";
 
 interface ProductWitheUser extends Product {
   user: User;
+  sold:Sold[];
 }
 
 interface ItemDetailResponse {
@@ -25,6 +25,12 @@ export interface ItemDeleteResponse {
   deleteProduct : Product;
 }
 
+interface SoldResponse {
+  ok:boolean;
+}
+
+
+
 export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
   const router = useRouter();
   const { user } = useUser();
@@ -32,13 +38,19 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
     router.query.id ? `/api/products/${router.query.id}` : null
   );
   const [ toggleFav ] = useMutation(`/api/products/${router.query.id}/favorite`);
+  const [ toggleSold ] = useMutation<SoldResponse>(`/api/products/${router.query.id}/sold`);
   const [ deletePost,{ data:postDeleteData } ] = useMutation<ItemDeleteResponse>(`/api/products/${router.query.id}`);
 
+  console.log(data);
   const onFavClicked = () => {
     if (!data) return;
     boundMutate((prev) => prev && { ...prev, isLiked: !prev.isLiked }, false);
     toggleFav({});
   };
+
+  const onSoldClicked = () =>[
+    toggleSold({})
+  ]
   const deletePostClicked = async() => {
     try{
       deletePost({});
@@ -61,7 +73,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
       {data ? (
         <div className="px-4 py-10">
           <div className="mb-8">
-            {data.product.uploadVideo ? (
+            {data?.product?.uploadVideo ? (
               <iframe
                 src={`https://customer-odn2bz8flwihe8yi.cloudflarestream.com/${data?.product?.uploadVideo}/iframe`}
                 allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
@@ -73,17 +85,28 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               </div>
             )}
           </div>
-          {user && user.id === data.product.userId ? (
-            <div className="flex flex-row justify-end">
+          {user && user.id === data?.product?.userId ? (
+            <div className="flex flex-row justify-between">
               <button
-                className="p-2 bg-slate-400 text-white rounded-md text-sm hover:bg-purple-500 hover:text-white"
+                className={cls(
+                  "px-6 rounded-2xl text-sm",
+                  data.product.sold[0].saleIs === false
+                    ? "bg-slate-300  text-slate-600  hover:bg-purple-400 hover:text-white hover:font-semibold"
+                    : "bg-purple-400"
+                )}
+                onClick={onSoldClicked}
+              >
+                {data.product.sold[0].saleIs === false ? "판매중" : "판매완료"}
+              </button>
+              <button
+                className="p-2 bg-slate-300 text-slate-600 rounded-md text-sm hover:bg-purple-500 hover:text-white"
                 onClick={changePostClicked}
               >
                 게시글 변경
               </button>
             </div>
           ) : null}
-          {user && user.id !== data.product.userId ? (
+          {user && user.id !== data?.product?.userId ? (
             <Button
               large
               text="사장님에게 채팅톡톡"
@@ -127,7 +150,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
                   : "text-gray-500  bg-white hover:bg-gray-300"
               )}
             >
-              {user && user.id !== data.product.userId ? (
+              {user && user.id !== data?.product?.userId ? (
                 data?.isLiked ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +198,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
           <div className="mt-10">
             <h2 className="text-lg font-bold text-gray-500">비슷한 관심상품</h2>
             <div className="mt-6 grid grid-cols-2 gap-4">
-              {data?.relatedProducts.map((relatedProd) => (
+              {data?.relatedProducts?.map((relatedProd) => (
                 <div key={relatedProd?.id}>
                   {relatedProd?.uploadVideo ? (
                     <img
@@ -193,7 +216,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               ))}
             </div>
           </div>
-          {user && user.id === data.product.userId ? (
+          {user && user.id === data?.product?.userId ? (
             <div>
               <Button
                 className="w-1/2"

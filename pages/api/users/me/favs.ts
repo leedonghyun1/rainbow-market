@@ -10,7 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       session: { user },
     } = req;
 
-    const favorites = await client.favorite.findMany({
+    const favs = await client.favorite.findMany({
       where: {
         userId: user?.id,
       },
@@ -29,7 +29,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     res.json({
       ok: true,
-      favorites,
+      favs,
     });
   }
 

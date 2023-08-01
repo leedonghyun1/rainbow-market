@@ -21,6 +21,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           favorites:true,
         }
       },
+      sold:true,
     },
   });
 

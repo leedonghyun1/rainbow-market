@@ -8,6 +8,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       body: { name, price, description, link, videoId},
       session: { user },
     } = req;
+
     const product = await client.product.create({
       data: {
         name,
@@ -22,6 +23,23 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         },
       },
     });
+
+    const sold = await client.sold.create({
+      data: {
+        saleIs: false,
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+        product: {
+          connect: {
+            id: product.id,
+          },
+        },
+      },
+    });
+
     res.json({
       ok:true,
       product,
@@ -35,6 +53,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             favorites:true,
           }
         },
+        sold:true,
       },
     })
 
