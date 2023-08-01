@@ -18,7 +18,7 @@ const Login: NextPage = () => {
   return (
     <div className="mt-16 px-4">
       <h3 className="text-5xl font-bold text-center text-purple-500">
-        Rainbow Super
+        Rainbow Supermarket
       </h3>
       <div className="mt-12">
         <div
