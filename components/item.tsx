@@ -14,7 +14,6 @@ interface ItemProps {
 }
 
 export default function Item({ id, title, price, favorite, image, sold}: ItemProps) {
-  console.log(sold);
   return (
     <Link
       href={`/products/${id}`}
