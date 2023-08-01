@@ -1,6 +1,6 @@
 import { NextPage } from "next";
-import Layout from "pages/components/layout";
-import ProductList from "pages/components/product-list";
+import Layout from "components/layout";
+import ProductList from "components/product-list";
 
 
 const Favs: NextPage = () => {

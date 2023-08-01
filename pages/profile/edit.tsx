@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import Button from "pages/components/button";
-import Input from "pages/components/input";
-import Layout from "pages/components/layout";
+import Button from "components/button";
+import Input from "components/input";
+import Layout from "components/layout";
 import useMutation from "libs/client/useMutation";
 import useUser from "libs/client/useUser";
 import { useEffect, useState } from "react";

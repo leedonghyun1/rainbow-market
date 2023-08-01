@@ -23,7 +23,7 @@
         "libs/*"
       ],
       "@components/*": [
-        "pages/components/*"
+        "components/*"
       ],
       "@client/*": [
         "client/*"

@@ -1,10 +1,10 @@
 import { Product } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import Button from "pages/components/button";
-import Input from "pages/components/input";
-import Layout from "pages/components/layout";
-import TextArea from "pages/components/textarea";
+import Button from "components/button";
+import Input from "components/input";
+import Layout from "components/layout";
+import TextArea from "components/textarea";
 import useMutation from "libs/client/useMutation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";

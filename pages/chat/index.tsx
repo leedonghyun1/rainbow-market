@@ -1,8 +1,7 @@
 import type { NextPage } from "next";
 import React from "react";
-import Layout from "../components/layout";
+import Layout from "components/layout";
 import Link from "next/link";
-import useUser from "libs/client/useUser";
 import useSWR from "swr";
 import { Product, Room, User } from "@prisma/client";
 import Image from "next/image";
@@ -20,7 +19,6 @@ interface RoomListResponse {
 
 const Chats: NextPage = () => {
 
-  const { user } = useUser();
   const { data } = useSWR<RoomListResponse>("/api/rooms")
   return (
     <Layout title="Chat" seoTitle="채팅내역" hasTabBar >

@@ -1,10 +1,9 @@
 import { Product } from "@prisma/client";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import Button from "pages/components/button";
-import Input from "pages/components/input";
-import Layout from "pages/components/layout";
-import TextArea from "pages/components/textarea";
+import Button from "components/button";
+import Input from "components/input";
+import Layout from "components/layout";
+import TextArea from "components/textarea";
 import useMutation from "libs/client/useMutation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -40,9 +39,9 @@ export default function Upload() {
   }, [video]);
 
   const [uploadProduct, { loading, data }] =
-    useMutation<productResponse>("/api/products/");
+    useMutation<productResponse>("/api/products");
 
-  const [deletePost, { data: postDeleteData }] =
+  const [deletePost] =
     useMutation<ItemDeleteResponse>(`/api/products/${router.query.id}`);
 
   const { data: productData } = useSWR<productResponse>(`/api/products/${router.query.id}`);
@@ -87,7 +86,7 @@ export default function Upload() {
 
   useEffect(() => {
     if (data?.ok) {
-      router.replace(`/products/${data.product.id}`);
+      router.replace(`/products/${data?.product?.id}`);
     }
   }, [data, router]);
 
@@ -148,7 +147,7 @@ export default function Upload() {
           name="name"
           type="text"
           kind="text"
-          value={productData.product.name}
+          value={productData?.product?.name}
         ></Input>
         <Input
           register={register("price")}
@@ -157,7 +156,7 @@ export default function Upload() {
           name="price"
           kind="price"
           type="text"
-          value={`${productData.product.price}`}
+          value={`${productData?.product?.price}`}
         ></Input>
         <Input
           register={register("link")}
@@ -166,14 +165,14 @@ export default function Upload() {
           name="link"
           type="text"
           kind="text"
-          value={`${productData.product.link}`}
+          value={`${productData?.product?.link}`}
         ></Input>
         <TextArea
           register={register("description")}
           required={false}
           label="상품 설명"
           name="description"
-          value={`${productData.product.description}`}
+          value={`${productData?.product?.description}`}
         ></TextArea>
         <Button text={loading ? "등록중..." : "등록"}></Button>
       </form>

@@ -1,6 +1,6 @@
 import { Product, User } from "@prisma/client";
-import Item from "./components/item";
-import Layout from "./components/layout";
+import Item from "../components/item";
+import Layout from "../components/layout";
 import { NextPage } from "next";
 import useSWR from "swr";
 import { useSession } from "next-auth/react";

@@ -1,14 +1,14 @@
 import type { NextPage } from "next";
 import React, { useEffect } from "react";
-import Message from "pages/components/message";
+import Message from "components/message";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import useMutation from "libs/client/useMutation";
 import useUser from "libs/client/useUser";
-import { Product, Room, User } from "@prisma/client";
-import Layout from "pages/components/layout";
+import { Product } from "@prisma/client";
+import Layout from "components/layout";
 import { io } from "socket.io-client";
+
 let socket;
 interface ProductMessage {
   message: string;
