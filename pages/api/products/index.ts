@@ -51,6 +51,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         _count:{
           select:{
             favorites:true,
+            room:true,
           }
         },
         sold:true,

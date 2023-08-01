@@ -4,9 +4,9 @@ import ProductList from "components/product-list";
 
 const Favs: NextPage = () => {
   return (
-    <Layout title="구매내역" canGoBack hasTabBar seoTitle="구매내역">
+    <Layout title="나의슈퍼" canGoBack hasTabBar seoTitle="나의슈퍼">
       <div className="flex flex-col space-y-5 pb-10 mt-12">
-        <ProductList kind="purchases"/>
+        <ProductList kind="sell"/>
       </div>
     </Layout>
   );

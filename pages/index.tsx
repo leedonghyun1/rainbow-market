@@ -8,16 +8,17 @@ import useMutation from "../libs/client/useMutation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
-export interface ProductWithFavsCount extends Product {
+export interface ProductWithCount extends Product {
   _count: {
     favorites: number;
+    room:number;
   };
   sold:Sold[];
 }
 
 interface ProductReponse {
   ok: Boolean;
-  products: ProductWithFavsCount[];
+  products: ProductWithCount[];
 }
 interface loginMutation {
   ok: Boolean;
@@ -47,6 +48,8 @@ const Home: NextPage = () => {
     reset();
     afterSearch(true);
   }
+
+  console.log(data);
   return (
     <div>
       <Layout seoTitle="슈퍼" hasTabBar canGoBack title="슈퍼">
@@ -68,6 +71,7 @@ const Home: NextPage = () => {
                     key={product.id}
                     image={product.uploadVideo}
                     sold={product.sold[0].saleIs}
+                    room={product._count?.room || 0}
                   />
                 ))
               : searchData
@@ -80,6 +84,7 @@ const Home: NextPage = () => {
                     key={product.id}
                     image={product.uploadVideo}
                     sold={product.sold[0].saleIs}
+                    room={product._count?.room || 0}
                   />
                 ))
               : data?.products?.map((product) => (
@@ -91,6 +96,7 @@ const Home: NextPage = () => {
                     key={product.id}
                     image={product.uploadVideo}
                     sold={product.sold[0].saleIs}
+                    room={product._count?.room || 0}
                   />
                 ))}
           </div>

@@ -1,13 +1,13 @@
 import { Favorite, Product } from "@prisma/client";
 import Item from "./item";
 import useSWR from "swr";
-import { ProductWithFavsCount } from "pages";
+import { ProductWithCount } from "pages";
 
 
 
 interface Record {
   id:number;
-  product:ProductWithFavsCount;
+  product:ProductWithCount;
 }
 
 interface ProductListResponse {
@@ -15,13 +15,15 @@ interface ProductListResponse {
 }
 
 interface ProductListProps {
-  kind: "sold" | "purchases" | "favs";
+  kind: "sold" | "sell" | "favs";
 }
 
 
 export default function ProductList({kind}:ProductListProps){
   
   const { data } = useSWR<ProductListResponse>(`/api/users/me/${kind}`)
+
+  console.log(data);
 
   return  (
     <>
@@ -34,6 +36,7 @@ export default function ProductList({kind}:ProductListProps){
           favorite={record.product._count.favorites || 0}
           image={record.product.uploadVideo}
           sold={record.product.sold[0].saleIs}
+          room={record.product._count.room || 0}
         />
       ))}
     </>
