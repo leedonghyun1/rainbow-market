@@ -71,35 +71,42 @@ export default function Layout({
             href="/"
             className={cls(
               "flex flex-col items-center space-y-2",
-              pathname?.startsWith("/")
+              router.pathname === "/"
                 ? "text-purple-600 font-semibold"
                 : "hover:text-gray-900 transition-colors"
             )}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              height="1em"
-              viewBox="0 0 576 512"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-6 h-6"
             >
-              <path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z" />
+              <path d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
             </svg>
+
             <span>홈</span>
           </Link>
           <Link
             href="/products/upload"
             className={cls(
               "flex flex-col items-center space-y-2",
-              pathname?.startsWith("/products/upload")
+              router.pathname === "/products/upload"
                 ? "text-purple-600  font-semibold"
                 : "hover:text-gray-900 transition-colors"
             )}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              height="1em"
-              viewBox="0 0 512 512"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-6 h-6"
             >
-              <path d="M288 109.3V352c0 17.7-14.3 32-32 32s-32-14.3-32-32V109.3l-73.4 73.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L288 109.3zM64 352H192c0 35.3 28.7 64 64 64s64-28.7 64-64H448c35.3 0 64 28.7 64 64v32c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V416c0-35.3 28.7-64 64-64zM432 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z" />
+              <path d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15" />
             </svg>
             <span>슈퍼등록</span>
           </Link>
@@ -107,7 +114,7 @@ export default function Layout({
             href="/stream"
             className={cls(
               "flex flex-col items-center space-y-2",
-              pathname?.startsWith("/stream")
+              router.pathname === "/stream"
                 ? "text-purple-600 font-semibold"
                 : "hover:text-gray-900 transition-colors"
             )}
@@ -128,17 +135,22 @@ export default function Layout({
             href="/profile/edit"
             className={cls(
               "flex flex-col items-center space-y-2",
-              pathname?.startsWith("/profile/edit")
+              router.pathname === "/profile/edit"
                 ? "text-purple-600 font-semibold"
                 : "hover:text-gray-900 transition-colors"
             )}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              height="1em"
-              viewBox="0 0 448 512"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-6 h-6"
             >
-              <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
+              <path
+                d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
             <span>나의슈퍼</span>
           </Link>

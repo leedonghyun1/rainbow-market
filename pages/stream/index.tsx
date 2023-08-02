@@ -16,6 +16,7 @@ interface StreamResponse {
 const Streams: NextPage = () => {
   const { data } = useSWR<StreamResponse>(`/api/stream`);
 
+  console.log(data);
 
   return (
     <Layout hasTabBar title="Live" seoTitle="Live">
@@ -27,14 +28,15 @@ const Streams: NextPage = () => {
                 href={`/stream/${streams.id}`}
                 className="pt-4 block  px-4"
               >
-                <div className="w-full relative rounded-md shadow-sm bg-slate-300 aspect-video">
-                  <Image
-                    src={`https://videodelivery.net/${streams?.cloudflareId}/thumbnails/thumbnail.jpg?time=1s&height=270`}
-                    width={48}
-                    height={48}
-                    alt={""}
-                  />
-                </div>
+                {streams?.cloudflareId ? (
+                  <iframe
+                    src={`https://customer-odn2bz8flwihe8yi.cloudflarestream.com/${streams?.cloudflareId}/iframe`}
+                    className="w-full h-auto aspect-video rounded-xl"
+                    allow="accelerometer; gyroscope; encrypted-media; picture-in-picture;"
+                  ></iframe>
+                ) : (
+                  <div className="w-full relative rounded-md shadow-sm bg-slate-300 aspect-video" />
+                )}
                 <h1 className="text-2xl mt-2 font-bold text-gray-900">
                   {streams.name}
                 </h1>

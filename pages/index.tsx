@@ -48,8 +48,6 @@ const Home: NextPage = () => {
     reset();
     afterSearch(true);
   }
-
-  console.log(data);
   return (
     <div>
       <Layout seoTitle="슈퍼" hasTabBar canGoBack title="슈퍼">

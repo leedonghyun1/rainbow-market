@@ -20,6 +20,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </div>
       </SWRConfig>
     </SessionProvider>
+
   );
 }
 

@@ -16,39 +16,41 @@ const Login: NextPage = () => {
    }
 
   return (
-    <div className="mt-16 px-4">
-      <h3 className="text-5xl font-bold text-center text-purple-500">
-        Rainbow Supermarket
+    <div className="mt-16 px-4 h-full flex flex-col gap-y-32">
+      <h3 className="text-5xl font-bold text-center text-white bg-purple-400 p-5 rounded-xl shadow-md">
+        Rainbow Super
       </h3>
-      <div className="mt-12">
-        <div
-          className="flex flex-col items-center justify-center gap-10"
-        >
-          {!session && (
-            <>
-              <button onClick={() => signIn("kakao")}>
-                <img
-                  src="/images/kakao_login_large_narrow.png"
-                  alt="kakao-login"
-                  className="h-12 w-auto"
-                />
-              </button>
-              <button onClick={() => signIn("naver")}>
-                <img
-                  src="/images/naver_login_large_narrow.png"
-                  alt="naver-login"
-                  className="h-12 w-auto"
-                />
-              </button>
-              <button onClick={() => signIn("google")}>
-                <img
-                  src="/images/google_login_large_narrow.png"
-                  alt="naver-login"
-                  className="h-12 w-auto"
-                />
-              </button>
-            </>
-          )}
+      <h5 className="text-2xl font-semibold text-center text-purple-300">
+        Anyone, anything you want to sell.
+      </h5>
+      <div>
+        <div className="flex flex-row justify-center gap-10">
+          {!session && 
+          <>
+            <button onClick={() => signIn("kakao")}>
+              <img
+                src="/images/btn/kakao.png"
+                alt="kakao-login"
+                className="h-12 w-auto rounded-full"
+              />
+            </button>
+            <button onClick={() => signIn("naver")}>
+              <img
+                src="/images/btn/naver.png"
+                alt="naver-login"
+                className="h-12 w-auto rounded-full"
+              />
+            </button>
+            <button onClick={() => signIn("google")}>
+              <img
+                src="/images/btn/google.png"
+                alt="google-login"
+                className="h-14 w-auto"
+              />
+            </button>
+          </>
+
+         } 
         </div>
       </div>
     </div>
