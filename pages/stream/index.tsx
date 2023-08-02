@@ -16,8 +16,6 @@ interface StreamResponse {
 const Streams: NextPage = () => {
   const { data } = useSWR<StreamResponse>(`/api/stream`);
 
-  console.log(data);
-
   return (
     <Layout hasTabBar title="Live" seoTitle="Live">
       <div className="py-10 divide-y-[1px] space-y-4 px-2">

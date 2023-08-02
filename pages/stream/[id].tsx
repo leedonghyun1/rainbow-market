@@ -44,7 +44,6 @@ const Streams: NextPage = () => {
   );
 
   const { data: userData } = useSWR<UserResponse>("/api/users/me");
-  console.log(userData);
   // const { register, handleSubmit, reset } = useForm<MessageFrom>();
   // const [ sendMessage, { loading, data:sendMessageData }] = useMutation(`/api/streams/${router.query.id}/messages`);
   // const onValid=(message:MessageFrom)=>{
@@ -90,7 +89,7 @@ const Streams: NextPage = () => {
             <div className="w-12 h-12 rounded-full bg-slate-500 " />
           )}
           <div className="text-sm text-gray-700 absolute left-14">
-            <p>{`${userData.profile.name}님의 홈쇼핑`}</p>
+            <p>{`${userData?.profile?.name}님의 홈쇼핑`}</p>
           </div>
           <div className="text-sm font-semibold text-orange-500 flex flex-col items-center justify-between">
             <svg
