@@ -66,6 +66,7 @@ model User {
   room          Room[]
   sold Sold[]
   purchase Purchase[]
+  stream Stream[]
 }
 
 model VerificationToken {
@@ -145,6 +146,8 @@ model Message {
   productId String
   room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId    String
+  stream    Stream     @relation(fields: [streamId], references: [id], onDelete: Cascade)
+  streamId    String
 
   @@index([userId, productId, roomId])
 }
@@ -164,4 +167,20 @@ model Room {
   message        Message[]
 
   @@index([userId, productId])
+}
+
+model Stream {
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  name          String
+  description   String    @db.MediumText
+  link        String?    @db.Text
+  price         Int
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  message       Message[]
+  cloudflareId  String
+  cloudflareUrl String
+  cloudflareKey String
 }
