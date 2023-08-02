@@ -45,6 +45,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       product,
     })
   }
+
   if(req.method === "GET"){
     const products = await client.product.findMany({
       include:{
@@ -68,5 +69,5 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 export default withApiSession(withHandler({
   methods:["POST","GET"],
   handler,
-  isPrivate:true,
+  isPrivate:false,
 }))

@@ -15,12 +15,11 @@ function MyApp({ Component, pageProps }: AppProps) {
             fetch(url).then((response) => response.json()),
         }}
       >
-        <div className="w-full mx-auto max-w-2xl">
+        <div className="w-full mx-auto max-w-full">
           <Component {...pageProps} />
         </div>
       </SWRConfig>
     </SessionProvider>
-
   );
 }
 
