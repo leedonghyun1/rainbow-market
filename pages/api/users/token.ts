@@ -4,9 +4,16 @@ import { withApiSession } from "libs/server/withSession";
 
 
 async function handler(req:NextApiRequest, res:NextApiResponse){
-  const email = req.body;
+  const {
+    body: {
+      user: { name, email, image },
+    },
+  } = req;
+
   if(!email) return res.status(400).json({ok:false});
 
+  if (req.body.user) return res.status(200).json({ ok: true });
+  
   const payload = Math.floor(10000 + Math.random() * 900000) + "";
   const token = await client.token.create({
     data: {

@@ -39,7 +39,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (session) {
-      login(session.user.email);
+      login(session);
     }
   }, []);
 
