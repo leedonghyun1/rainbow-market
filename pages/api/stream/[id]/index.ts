@@ -35,9 +35,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
       stream.cloudflareKey = "abnormal access";
       stream.cloudflareUrl = "abnormal access";
     }
-
-    console.log(stream);
-
+    
     res.json({
       ok: true,
       stream,

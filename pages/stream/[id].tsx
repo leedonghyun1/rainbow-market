@@ -60,7 +60,7 @@ const Streams: NextPage = () => {
   //   reset();
   // }
   return (
-    <Layout canGoBack seoTitle={`${data?.stream?.name} Live`}>
+    <Layout canGoBack seoTitle={`${data?.stream?.name} Live`} title="Live">
       <div className="py-10 px-4  space-y-4">
         <div className="w-full rounded-md shadow-sm aspect-video " >
           <iframe
