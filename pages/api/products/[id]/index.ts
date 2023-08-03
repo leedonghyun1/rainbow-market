@@ -37,6 +37,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           select:{
             saleIs:true,
           }
+        },
+        room:{
+          select:{
+            userId:true,
+            productId:true,
+          }
         }
       },
     });

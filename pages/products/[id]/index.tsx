@@ -110,7 +110,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               large
               text="사장님에게 채팅톡톡"
               onClick={() => {
-                router.push(`/chat/${data?.product?.id}`);
+                router.push(`/chat/product/${data?.product?.id}`);
               }}
             />
           ) : null}

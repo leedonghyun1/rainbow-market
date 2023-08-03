@@ -5,7 +5,7 @@ interface MessageProps {
   reversed?: boolean;
   image?:string;
 }
-export default function Message({message, reversed, image}:MessageProps){
+export default function MessageList({message, reversed, image}:MessageProps){
   return (
     <div
       className={cls(

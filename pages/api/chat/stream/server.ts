@@ -9,10 +9,8 @@ const SocketHandler = (_, res) => {
           credentials: true,
       }
   });
-  const roomName = Math.floor(10000 + Math.random() * 900000) + "";
   io.use((socket, next)=>{
     try{
-      socket.data.age=25;
       next();
     }catch(error){
       console.error("error : ", error);
@@ -20,14 +18,17 @@ const SocketHandler = (_, res) => {
     }
   })
   io.on("connect", (socket) => {
+    console.log(socket);
     socket.on("enter_room", async(routerId, userId, data) => {
-      const roomCheck = await client.room.findFirst({
+      console.log(routerId, userId)
+      const roomCheck = await client.room.findMany({
         where: {
           userId: userId + "",
           productId: routerId + "",
         },
       });
       if (!roomCheck) {
+        const roomName = Math.floor(10000 + Math.random() * 900000) + "";
         const roomCreate = await client.room.create({
           data: {
             name: roomName,

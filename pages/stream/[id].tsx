@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import React from "react";
 import Layout from "components/layout";
-import Message from "components/message";
+import Message from "@components/message-list";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { Stream, User } from "@prisma/client";
