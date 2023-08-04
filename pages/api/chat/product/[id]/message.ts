@@ -10,18 +10,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
   const {
     query: { id },
     body: {
-      messageInput,
+      message,
       checkRoom: { room },
     },
     session: { user },
   } = req;
-
-    const message = await client.message.create({
+    const messages = await client.message.create({
       data: {
-        message : messageInput.messageInput+"",
+        message: message.message + "",
         product: {
           connect: {
-            id:id+"",
+            id: id + "",
           },
         },
         user: {
@@ -29,17 +28,27 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
             id: user?.id,
           },
         },
-        room:{
-          connect:{
-            id: room.id,
-          }
-        }
+        room: {
+          connect: {
+            id: room?.id,
+          },
+        },
       },
     });
 
+    const updateMessage = await client.room.update({
+      where : {
+        id: messages?.roomId
+      },
+      data:{
+        lastChat : messages?.message,
+        timeOfLastChat : new Date(),
+      }
+    })
+
     res.json({
       ok: true,
-      message,
+      messages,
     });
   }
 export default withApiSession(withHandler({

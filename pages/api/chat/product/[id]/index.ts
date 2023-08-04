@@ -9,7 +9,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   } = req;
 
   if (req.method === "GET") {
-    const product = await client.product.findMany({
+    const product = await client.product.findFirst({
       where: {
         id: id + "",
       },
@@ -19,6 +19,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             name: true,
             email: true,
             image: true,
+            id:true,
           },
         },
         room: {
