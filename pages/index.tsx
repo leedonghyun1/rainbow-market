@@ -42,7 +42,7 @@ const Home: NextPage = () => {
     if (session) {
       login(session);
     }
-  }, []);
+  }, [session]);
 
   const searchItem = (item) => {
     search(item);

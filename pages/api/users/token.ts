@@ -57,6 +57,12 @@ async function handler(req:NextApiRequest, res:NextApiResponse){
   }
   await req.session.save();
 
+  await client.token.deleteMany({
+    where: {
+      userId: foundToken.userId,
+    },
+  });
+
   return res.json({
     ok: true,
     token,
