@@ -41,6 +41,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
+    await res.revalidate(`/chat/product/${id}`);
+
     res.json({
       ok: true,
       product,

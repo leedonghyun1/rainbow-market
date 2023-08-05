@@ -6,7 +6,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   const {
     query: { id },
     session: { user },
-    body: { data },
+    body
   } = req;
 
   if (req.method == "POST") {
@@ -16,7 +16,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const room = await client.room.create({
       data: {
         name: payload,
-        productOwnerId : data?.product?.user?.id,
+        productOwnerId : body.user.id,
         product: {
           connect: {
             id: id + "",

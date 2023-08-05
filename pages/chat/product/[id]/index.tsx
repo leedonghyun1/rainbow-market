@@ -1,5 +1,5 @@
-import type { NextPage } from "next";
-import React, { use, useEffect } from "react";
+import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import React, { use, useEffect, useState } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -8,7 +8,7 @@ import { Message, Product, Room, User } from "@prisma/client";
 import Layout from "components/layout";
 import useMutation from "@libs/client/useMutation";
 import MessageList from "@components/message-list";
-import message from "pages/api/chat/product/[id]/message";
+import client from "@libs/server/client"
 
 interface ProductWithRoom extends Room {
   message: RoomWithMessage[];
@@ -18,7 +18,6 @@ interface ProductWithMessage extends Product {
   user: User;
 }
 interface ProductResponse {
-  ok: boolean;
   product: ProductWithMessage;
 }
 
@@ -42,7 +41,8 @@ interface RoomResponse {
   room: RoomWithMessage;
 }
 
-const ChatDetail: NextPage = () => {
+const ChatDetail: NextPage<ProductResponse> = ({product}) => {
+  let roomState = false;
   const router = useRouter();
   const { user } = useUser();
 
@@ -50,27 +50,29 @@ const ChatDetail: NextPage = () => {
   const [sendMessage, { loading }] = useMutation(
     `/api/chat/product/${router.query.id}/message`
   );
-  const [createRoom, { data: createRoomData }] = useMutation<RoomResponse>(
+  const [ createRoom ] = useMutation(
     `/api/rooms/${router.query.id}`
   );
 
+  //아래 부분을 getStaticProps로 변경 필요.
   const { data: checkRoom, mutate } = useSWR<RoomResponse>(
     router.query.id ? `/api/rooms/${router.query.id}` : null,
     { refreshInterval: 500 }
   );
 
-  const { data } = useSWR<ProductResponse>(
-    router.query.id ? `/api/chat/product/${router.query.id}` : null
-  );
+  // const { data } = useSWR<ProductResponse>(
+  //   router.query.id ? `/api/chat/product/${router.query.id}` : null
+  // );
 
   useEffect(() => {
-    if (!checkRoom?.room) {
-      createRoom({ data });
+    roomState = Boolean(checkRoom?.room);
+    if (!roomState) {
+      createRoom(product);
     }
-  }, [checkRoom]);
+    roomState = false;
+  }, []);
 
   const onValid = (message: MessageFrom) => {
-    if (loading) return;
     sendMessage({ message, checkRoom });
     mutate(
       (prev) =>
@@ -90,16 +92,16 @@ const ChatDetail: NextPage = () => {
     reset();
   };
   return (
-    <Layout canGoBack seoTitle={`${data?.product?.name} chat`}>
+    <Layout canGoBack seoTitle={`${product?.name} chat`}>
       <div className="py-10 px-4  space-y-4">
         <div className="mt-5">
           <h1 className="text-3xl font-bold text-gray-900">
-            {data?.product?.name}
+            {product?.name}
           </h1>
           <span className="text-2xl block mt-3 text-gray-900">
-            {data?.product?.price}
+            {product?.price}
           </span>
-          <p className=" my-6 text-gray-700">{data?.product?.description}</p>
+          <p className=" my-6 text-gray-700">{product?.description}</p>
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Live Chat</h2>
@@ -134,5 +136,58 @@ const ChatDetail: NextPage = () => {
     </Layout>
   );
 };
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return {
+    paths:[],
+    fallback:"blocking"
+  }
+}
+
+export const getStaticProps: GetStaticProps = async(ctx) =>{
+  if(!ctx?.params?.id){
+    return {
+      props:{},
+    }
+  }
+  const product = await client.product.findFirst({
+    where: {
+      id: ctx?.params?.id + "",
+    },
+    include: {
+      user: {
+        select: {
+          name: true,
+          email: true,
+          image: true,
+          id:true,
+        },
+      },
+      room: {
+        include: {
+          message: {
+            select: {
+              id: true,
+              message: true,
+              user: {
+                select: {
+                  image: true,
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  
+  return{
+    props:{
+      product: JSON.parse(JSON.stringify(product)),
+    },
+  }
+}
 
 export default ChatDetail;
