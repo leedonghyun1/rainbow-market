@@ -40,7 +40,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     const room = await client.room.findFirst({
       where: {
-        userId: user?.id + "",
+        productOwnerId: user?.id + "",
         productId: id +"",
       },
       include:{

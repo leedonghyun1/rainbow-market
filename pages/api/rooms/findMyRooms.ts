@@ -9,7 +9,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     } = req;
     const rooms = await client.room.findMany({
       where: {
-        userId: user.id + "",
+        productOwnerId: user.id + "",
       },
       include: {
         user: {

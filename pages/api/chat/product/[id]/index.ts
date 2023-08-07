@@ -5,7 +5,6 @@ import { withApiSession } from "libs/server/withSession";
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const {
     query: { id },
-    session: { user },
   } = req;
 
   if (req.method === "GET") {

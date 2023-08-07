@@ -10,16 +10,26 @@ import useMutation from "@libs/client/useMutation";
 import MessageList from "@components/message-list";
 import client from "@libs/server/client"
 
-interface ProductWithRoom extends Room {
-  message: RoomWithMessage[];
+interface ProductRoomWithMessage {
+  message: string;
+  id: string;
+  user: {
+    image?: string;
+    id?: string;
+  };
 }
-interface ProductWithMessage extends Product {
-  room: ProductWithRoom[];
-  user: User;
+
+interface ProductWithMessage extends Room {
+  message:ProductRoomWithMessage[];
+}
+
+interface ProductWithRoom extends Product {
+  room: ProductWithMessage[];
 }
 interface ProductResponse {
-  product: ProductWithMessage;
+  product: ProductWithRoom;
 }
+
 
 interface MessageFrom {
   message: string;
@@ -106,7 +116,7 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Live Chat</h2>
           <form onSubmit={handleSubmit(onValid)}>
-            <div className="py-10 pb-16 h-[50vh] overflow-y-scroll  px-4 space-y-4">
+            <div className="py-10 pb-16 h-[50vh] overflow-y-scroll px-4 space-y-4">
               {checkRoom?.room?.message?.map((messages) => (
                 <MessageList
                   key={messages?.id}
@@ -153,6 +163,7 @@ export const getStaticProps: GetStaticProps = async(ctx) =>{
   const product = await client.product.findFirst({
     where: {
       id: ctx?.params?.id + "",
+    
     },
     include: {
       user: {
@@ -182,7 +193,6 @@ export const getStaticProps: GetStaticProps = async(ctx) =>{
     },
   });
 
-  
   return{
     props:{
       product: JSON.parse(JSON.stringify(product)),
