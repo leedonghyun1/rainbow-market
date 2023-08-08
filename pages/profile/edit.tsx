@@ -96,7 +96,7 @@ export default function Edit() {
           )}
           <label
             htmlFor="picture"
-            className="cursor-pointer py-2 px-3 border hover:bg-slate-300 hover:text-white border-gray-300 rounded-md shadow-md text-sm font-medium focus:ring-offset-2 focus:ring-slate-300 text-gray-700"
+            className="cursor-pointer py-2 px-3 border hover:bg-purple-300 hover:text-white border-gray-300 rounded-md shadow-md text-sm font-medium focus:ring-offset-2 focus:ring-slate-300 text-gray-700 transition-colors"
           >
             프로필 변경
           </label>

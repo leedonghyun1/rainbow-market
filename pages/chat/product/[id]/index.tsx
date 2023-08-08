@@ -4,12 +4,13 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import useUser from "libs/client/useUser";
-import { Message, Product, Room, User } from "@prisma/client";
+import { Message, Product, Room, Sold, User } from "@prisma/client";
 import Layout from "components/layout";
 import useMutation from "@libs/client/useMutation";
 import MessageList from "@components/message-list";
 import client from "@libs/server/client"
 import { getSession } from "next-auth/react";
+import cls from "@libs/client/utils";
 
 
 interface ProductRoomWithMessage {
@@ -27,6 +28,7 @@ interface ProductWithMessage extends Room {
 
 interface ProductWithRoom extends Product {
   room: ProductWithMessage[];
+  sold:Sold[];
 }
 interface ProductResponse {
   product: ProductWithRoom;
@@ -84,22 +86,40 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
     );
     reset();
   };
+
   return (
     <Layout canGoBack seoTitle={`${product?.name} chat`}>
-      <div className="py-10 px-4  space-y-4">
-        <div className="mt-5">
-          <h1 className="text-3xl font-bold text-gray-900">
-            {product?.name}
-          </h1>
-          <span className="text-2xl block mt-3 text-gray-900">
-            {product?.price}
-          </span>
-          <p className=" my-6 text-gray-700">{product?.description}</p>
+      <div className="py-2 px-4  space-y-4">
+        <div className="mt-5 flex flex-row border-b py-2">
+          <div>
+            <img
+              className="w-14 h-12 bg-gray-400 rounded-md shadow-lg"
+              src={`https://customer-odn2bz8flwihe8yi.cloudflarestream.com/${product.uploadVideo}/thumbnails/thumbnail.jpg?time=1s&height=48`}
+            />
+          </div>
+          <div className="flex flex-col ml-3">
+            <span className="text-sm text-gray-500 font-semibold underline mb-1">
+              {product?.price} 원
+            </span>
+            <div
+              className={cls(
+                "flex items-end justify-between px-3 rounded-md text-sm mr-3 self-center",
+                product.sold[0].saleIs === false
+                  ? "bg-slate-300"
+                  : "bg-purple-400"
+              )}
+            >
+              {product.sold[0].saleIs === false ? "판매중" : "판매완료"}
+            </div>
+          </div>
+          <div className="ml-3">
+            <h1 className="text-xl font-bold text-gray-600">{product?.name}</h1>
+            <p className="text-sm text-gray-700">{product?.description}</p>
+          </div>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Live Chat</h2>
           <form onSubmit={handleSubmit(onValid)}>
-            <div className="py-10 pb-16 h-[50vh] overflow-y-scroll px-4 space-y-4">
+            <div className="py-2 pb-16 h-[50vh] overflow-y-scroll px-4 space-y-4">
               {checkRoom?.room?.message?.map((messages) => (
                 <MessageList
                   key={messages?.id}
@@ -173,6 +193,11 @@ export const getStaticProps: GetStaticProps = async(ctx) =>{
           },
         },
       },
+      sold:{
+        select:{
+          saleIs:true,
+        }
+      }
     },
   });
 

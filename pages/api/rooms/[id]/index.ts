@@ -12,8 +12,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method == "POST") {
 
     const payload = Math.floor(1000000 + Math.random() * 90000000) + "";
-  
-
+    
     const room = await client.room.create({
       data: {
         name: payload,

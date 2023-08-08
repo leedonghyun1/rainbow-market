@@ -12,6 +12,7 @@ export interface LayoutProps {
   children: React.ReactNode;
   hasTabBar?: boolean;
   title?: string;
+  notificationNum?: number;
 }
 
 export default function Layout({
@@ -20,10 +21,11 @@ export default function Layout({
   children,
   hasTabBar,
   title,
+  notificationNum,
 }: LayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { data:session } = useSession();
+  const { data: session } = useSession();
   const onClick = () => {
     router.back();
   };
@@ -32,7 +34,7 @@ export default function Layout({
       <Head>
         <title>{`${seoTitle} | 무지개 슈퍼마켓`}</title>
       </Head>
-      <div className="text-gray-700 bg-white text-xl w-full max-auto h-12 max-w-2xl flex items-center justify-center font-bold fixed top-0 border-b">
+      <div className="text-gray-700 bg-white text-xl w-full max-auto h-12 max-w-2xl flex items-center justify-between font-bold fixed top-0 border-b">
         {canGoBack ? (
           <button className="absolute left-4" onClick={onClick}>
             <svg
@@ -47,22 +49,56 @@ export default function Layout({
         {title ? (
           <span className={cls(canGoBack ? "mx-auto" : "", "")}>{title}</span>
         ) : null}
-        {session && (
-          <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="absolute mr-3 text-xs right-1 bg-slate-200 p-1 rounded-lg hover:bg-red-400 hover:text-white hover:font-bold"
-          >
-            Log Out
-          </button>
-        )}
-        {!session && (
-          <button
-            onClick={() => router.replace("/login")}
-            className="absolute mr-3 text-xs right-1 bg-slate-200 p-1 rounded-lg hover:bg-purple-400 hover:text-white hover:font-bold"
-          >
-            Log In
-          </button>
-        )}
+        <div className="flex flex-row gap-2">
+          {notificationNum !== 0 ? (
+            <div className="self-center pt-1 relative flex">
+              <button
+                className="cursor-pointer"
+                onClick={() => {
+                  router.push("/chat/product");
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+                  />
+                </svg>
+                <div className="absolute left-2 bottom-1">
+                  <span className="text-[3px] bg-purple-500 text-white px-1 rounded-full">
+                    1
+                  </span>
+                </div>
+              </button>
+            </div>
+          ) : null}
+          <div>
+            {session && (
+              <button
+                onClick={() => signOut({ callbackUrl: "/login" })}
+                className="mr-3 text-xs right-1 bg-slate-200 p-1 rounded-lg hover:bg-red-400 hover:text-white hover:font-bold"
+              >
+                Log Out
+              </button>
+            )}
+            {!session && (
+              <button
+                onClick={() => router.replace("/login")}
+                className="absolute mr-3 text-xs right-1 bg-slate-200 p-1 rounded-lg hover:bg-purple-400 hover:text-white hover:font-bold"
+              >
+                Log In
+              </button>
+            )}
+          </div>
+        </div>
       </div>
       <div className={cls("pt-5", hasTabBar ? "pb-24" : "")}>{children}</div>
       {hasTabBar ? (
@@ -148,9 +184,7 @@ export default function Layout({
               stroke="currentColor"
               className="w-6 h-6"
             >
-              <path
-                d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-              />
+              <path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             <span>나의슈퍼</span>
           </Link>

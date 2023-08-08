@@ -143,6 +143,7 @@ model Message {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   message   String   @db.MediumText
+  readOrNot Boolean?
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
   room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
@@ -156,7 +157,6 @@ model Room {
   name           String
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
-  readOrNot      Boolean?
   lastChat       String?
   timeOfLastChat DateTime?
   productOwnerId String?

@@ -17,7 +17,7 @@ const Streams: NextPage = () => {
   const { data } = useSWR<StreamResponse>(`/api/stream`);
 
   return (
-    <Layout hasTabBar title="Live" seoTitle="Live">
+    <Layout canGoBack hasTabBar title="Live" seoTitle="Live">
       <div className="py-10 divide-y-[1px] space-y-4 px-2">
         {data
           ? data?.stream?.map((streams) => (
