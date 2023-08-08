@@ -56,6 +56,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           select: {
             id: true,
             message: true,
+            readOrNot:true,
             user: {
               select: {
                 image: true,

@@ -5,13 +5,16 @@ interface MessageProps {
   reversed?: boolean;
   image?:string;
   readOrNot?:boolean;
+  loading?:boolean;
 }
 export default function MessageList({message, reversed, image, readOrNot}:MessageProps){
   return (
     <div
       className={cls(
         "flex items-center",
-        reversed ? "flex-row-reverse space-x-reverse gap-2" : "space-x-2"
+        reversed
+          ? "flex-row-reverse space-x-reverse gap-2 relative"
+          : "space-x-2"
       )}
     >
       <img
@@ -24,26 +27,53 @@ export default function MessageList({message, reversed, image, readOrNot}:Messag
       <div
         className={cls(
           "flex self-center",
-          readOrNot === false ? "text-gray-500" : "text-purple-500"
+          readOrNot === false || readOrNot === undefined
+            ? "text-gray-500"
+            : "text-purple-500"
         )}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="1.5"
-          stroke="currentColor"
-          className="w-4 h-4"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        <span className="text-[9px] self-center ml-1">
-        {readOrNot === false ? "안읽음" : "읽음"}
-          </span>
+        {reversed ? (
+          <div className="relative">
+            <div className="absolute left-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+          </div>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-4 h-4"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        )}
+        <span className="text-[9px] self-center mr-1">
+          {reversed
+            ? readOrNot === false || readOrNot === undefined
+              ? "안읽음"
+              : "읽음"
+            : ""}
+        </span>
       </div>
     </div>
   );

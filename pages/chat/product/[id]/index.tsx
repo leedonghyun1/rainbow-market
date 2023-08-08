@@ -11,10 +11,11 @@ import MessageList from "@components/message-list";
 import client from "@libs/server/client"
 import { getSession } from "next-auth/react";
 import cls from "@libs/client/utils";
+import message from "pages/api/chat/product/[id]/message";
 
 
 interface ProductRoomWithMessage {
-  message: string;
+  message:string;
   id: string;
   user: {
     image?: string;
@@ -29,6 +30,7 @@ interface ProductWithMessage extends Room {
 interface ProductWithRoom extends Product {
   room: ProductWithMessage[];
   sold:Sold[];
+  user:User;
 }
 interface ProductResponse {
   product: ProductWithRoom;
@@ -41,6 +43,7 @@ interface MessageFrom {
 interface RoomMessage {
   message: string;
   id: string;
+  readOrNot:boolean;
   user: {
     image?: string;
     id?: string;
@@ -59,16 +62,34 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
   const { user } = useUser();
 
   const { register, handleSubmit, reset } = useForm<MessageFrom>();
+
   const [sendMessage] = useMutation(
     `/api/chat/product/${router.query.id}/message`
   );
-
-  const { data: checkRoom, mutate } = useSWR<RoomResponse>(
-    router.query.id ? `/api/rooms/${router.query.id}` : null,
+  const { data: checkRoomAndMsg, mutate } = useSWR<RoomResponse>(
+    router.query.id ? `/api/rooms/${router.query.id}` : null, {
+      refreshInterval: 1000,
+    }
+  );
+  const { data, mutate: boundMutate } = useSWR<RoomResponse>(
+    `/api/rooms/${router.query.id}`,
+    { refreshInterval: 500 }
   );
 
+  const [ updateReadOrNot, {data: updateRoNdata , loading} ] = useMutation(`/api/chat/product/${router.query.id}/updateReadOrNot`);
+
+  useEffect(() => {
+    if (!data) return;
+    if (user?.id === checkRoomAndMsg?.room?.productOwnerId || user?.id === checkRoomAndMsg?.room?.userId) {
+      boundMutate(data.room.message.map((message)=>{
+        message.readOrNot = true;
+      }) as any,false)
+      updateReadOrNot({ checkRoomAndMsg });
+    }
+  },[boundMutate]);
+
   const onValid = (message: MessageFrom) => {
-    sendMessage({ message, checkRoom });
+    sendMessage({ message, checkRoomAndMsg });
     mutate(
       (prev) =>
         prev &&
@@ -88,7 +109,7 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
   };
 
   return (
-    <Layout canGoBack seoTitle={`${product?.name} chat`}>
+    <Layout canGoBack title={product.user.name} seoTitle={`${product?.name} chat`}>
       <div className="py-2 px-4  space-y-4">
         <div className="mt-5 flex flex-row border-b py-2">
           <div>
@@ -120,12 +141,13 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
         <div>
           <form onSubmit={handleSubmit(onValid)}>
             <div className="py-2 pb-16 h-[50vh] overflow-y-scroll px-4 space-y-4">
-              {checkRoom?.room?.message?.map((messages) => (
+              {checkRoomAndMsg?.room?.message?.map((messages) => (
                 <MessageList
-                  key={messages?.id}
-                  message={messages?.message}
-                  reversed={messages?.user?.id === user?.id ? true : false}
-                  image={messages?.user?.image}
+                  key={messages.id}
+                  message={messages.message}
+                  reversed={messages.user?.id === user?.id ? true : false}
+                  image={messages.user?.image}
+                  readOrNot={messages.readOrNot}
                 />
               ))}
             </div>
@@ -134,10 +156,10 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
                 <input
                   {...register("message", { required: true })}
                   type="text"
-                  className="shadow-sm rounded-full w-full border-gray-300 focus:ring-orange-500 focus:outline-none pr-12 focus:border-orange-500"
+                  className="shadow-sm rounded-full w-full border-gray-300 focus:ring-purple-500 focus:outline-none pr-12 focus:border-purple-500"
                 />
                 <div className="absolute inset-y-0 flex py-1.5 pr-1.5 right-0">
-                  <button className="flex focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 items-center bg-orange-500 rounded-full px-3 hover:bg-orange-600 text-sm text-white">
+                  <button className="flex focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 items-center bg-purple-500 rounded-full px-3 hover:bg-purple-600 text-sm text-white">
                     &rarr;
                   </button>
                 </div>
