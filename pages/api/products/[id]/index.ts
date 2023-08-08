@@ -42,6 +42,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           select:{
             userId:true,
             productId:true,
+            productOwnerId:true,
           }
         }
       },

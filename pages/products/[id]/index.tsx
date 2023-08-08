@@ -1,4 +1,4 @@
-import { Product, Sold, User } from "@prisma/client";
+import { Product, Room, Sold, User } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -12,6 +12,7 @@ import useSWR from "swr";
 interface ProductWitheUser extends Product {
   user: User;
   sold: Sold[];
+  room: Room[];
 }
 
 interface ItemDetailResponse {
@@ -35,6 +36,8 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
   const { data, mutate: boundMutate } = useSWR<ItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
+  
+  const { data:productRoomData } = useSWR<ItemDetailResponse>(`/api/products/${router.query.id}`);
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/favorite`);
   const [toggleSold] = useMutation<SoldResponse>(
     `/api/products/${router.query.id}/sold`
@@ -65,6 +68,26 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
 
   const changePostClicked = async () => {
     router.replace(`/products/${router.query.id}/edit`);
+  };
+
+  const [ createRoom ] = useMutation(`/api/rooms/${router.query.id}`);
+
+  const onRoomValid = () => {
+    console.log(productRoomData);
+    if (productRoomData.product?.room?.length === 0) {
+      createRoom(data.product.userId);
+      router.push(`/chat/product/${router.query.id}`);
+    } else {
+      productRoomData.product?.room?.map((room) => {
+        if (user?.id === room.userId || user?.id === room.productOwnerId) {
+          router.push(`/chat/product/${router.query.id}`);
+        } else {
+          // 상품의 채팅룸이 있으나 본인이 생성한 룸이 없을 때  ( 룸이 여러개이기 때문 )
+          createRoom(data.product.userId);
+          router.push(`/chat/product/${router.query.id}`);
+        }
+      });
+    }
   };
 
   return (
@@ -106,13 +129,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
             </div>
           ) : null}
           {user && user.id !== data?.product?.userId ? (
-            <Button
-              large
-              text="사장님에게 채팅톡톡"
-              onClick={() => {
-                router.push(`/chat/product/${data?.product?.id}`);
-              }}
-            />
+            <Button large text="사장님에게 채팅톡톡" onClick={onRoomValid} />
           ) : null}
 
           <div className="flex justify-between items-center relative mt-5">

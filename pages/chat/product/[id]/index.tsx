@@ -1,4 +1,4 @@
-import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from "next";
 import React, { use, useEffect, useState } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/router";
@@ -9,6 +9,8 @@ import Layout from "components/layout";
 import useMutation from "@libs/client/useMutation";
 import MessageList from "@components/message-list";
 import client from "@libs/server/client"
+import { getSession } from "next-auth/react";
+
 
 interface ProductRoomWithMessage {
   message: string;
@@ -29,7 +31,6 @@ interface ProductWithRoom extends Product {
 interface ProductResponse {
   product: ProductWithRoom;
 }
-
 
 interface MessageFrom {
   message: string;
@@ -52,35 +53,17 @@ interface RoomResponse {
 }
 
 const ChatDetail: NextPage<ProductResponse> = ({product}) => {
-  let roomState = false;
   const router = useRouter();
   const { user } = useUser();
 
   const { register, handleSubmit, reset } = useForm<MessageFrom>();
-  const [sendMessage, { loading }] = useMutation(
+  const [sendMessage] = useMutation(
     `/api/chat/product/${router.query.id}/message`
   );
-  const [ createRoom ] = useMutation(
-    `/api/rooms/${router.query.id}`
-  );
 
-  //아래 부분을 getStaticProps로 변경 필요.
   const { data: checkRoom, mutate } = useSWR<RoomResponse>(
     router.query.id ? `/api/rooms/${router.query.id}` : null,
-    { refreshInterval: 500 }
   );
-
-  // const { data } = useSWR<ProductResponse>(
-  //   router.query.id ? `/api/chat/product/${router.query.id}` : null
-  // );
-
-  useEffect(() => {
-    roomState = Boolean(checkRoom?.room);
-    if (!roomState) {
-      createRoom(product);
-    }
-    roomState = false;
-  }, []);
 
   const onValid = (message: MessageFrom) => {
     sendMessage({ message, checkRoom });
@@ -155,6 +138,7 @@ export const getStaticPaths: GetStaticPaths = () => {
 }
 
 export const getStaticProps: GetStaticProps = async(ctx) =>{
+
   if(!ctx?.params?.id){
     return {
       props:{},
@@ -163,7 +147,6 @@ export const getStaticProps: GetStaticProps = async(ctx) =>{
   const product = await client.product.findFirst({
     where: {
       id: ctx?.params?.id + "",
-    
     },
     include: {
       user: {

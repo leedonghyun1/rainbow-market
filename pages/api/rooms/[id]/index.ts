@@ -12,11 +12,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method == "POST") {
 
     const payload = Math.floor(1000000 + Math.random() * 90000000) + "";
+  
 
     const room = await client.room.create({
       data: {
         name: payload,
-        productOwnerId : body.user.id,
+        productOwnerId : body,
         product: {
           connect: {
             id: id + "",
@@ -40,23 +41,31 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     const room = await client.room.findFirst({
       where: {
-        productOwnerId: user?.id + "",
-        productId: id +"",
-      },
-      include:{
-        message:{
-          select:{
-            id:true,
-            message:true,
-            user:{
-              select:{
-                image:true,
-                id:true,
-              }
-            }
+        OR: [
+          {
+            productId: id + "",
+            userId:user.id,
+          },
+          {
+            productId: id + "",
+            productOwnerId:user.id,
           }
-        }
-      }
+        ],
+      },
+      include: {
+        message: {
+          select: {
+            id: true,
+            message: true,
+            user: {
+              select: {
+                image: true,
+                id: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     res.json({

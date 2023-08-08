@@ -9,12 +9,14 @@ interface ProfileResponse {
 }
 
 export default function useUser(){
-  const { data, error } = useSWR<ProfileResponse>("/api/users/me")
+  const { data, error } = useSWR<ProfileResponse>("/api/users/me");
   const router = useRouter();
 
   useEffect(()=>{if( data && !data.ok){
     router.replace("/");
   }},[router, data]);
 
+
   return { user: data?.profile, isLoading: !data && !error };
 }
+
