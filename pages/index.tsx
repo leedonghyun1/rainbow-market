@@ -28,6 +28,7 @@ interface loginMutation {
 const Home: NextPage = () => {
   const { data } = useSWR<ProductReponse>("/api/products");
   const { data: session } = useSession();
+  const { data: notificationUpdate } = useSWR("/api/users/me/notification");
   const { register, handleSubmit, watch, reset } = useForm();
   const [login, { loading, data: tokenData, error }] =
     useMutation<loginMutation>("/api/users/token");
@@ -49,10 +50,12 @@ const Home: NextPage = () => {
     reset();
     afterSearch(true);
   }
+
+  console.log(notificationUpdate?.unreadMsgCount);
   
   return (
     <div>
-      <Layout seoTitle="슈퍼" hasTabBar canGoBack title="슈퍼">
+      <Layout seoTitle="슈퍼" hasTabBar canGoBack title="슈퍼" notificationNum={notificationUpdate?.unreadMsgCount}>
         <form onSubmit={handleSubmit(searchItem)}>
           <div className="flex flex-col space-y-5  py-10">
             <input

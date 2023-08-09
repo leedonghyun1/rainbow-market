@@ -6,7 +6,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
   const {
     query: { id },
     body: {
-      checkRoomAndMsg:{ room},
+      checkRoomAndMsg:{ room },
     },
     session: { user },
   } = req;
@@ -17,18 +17,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
     },
     select: {
       id: true,
+      userId:true,
     },
   });
 
+
   findMessage.map(async (message) => {
-    const updateMessage = await client.message.update({
-      where: {
-        id: message.id,
-      },
-      data: {
-        readOrNot: true,
-      },
-    });
+    if(message.userId!==user.id){
+      const updateMessage = await client.message.update({
+        where: {
+          id: message.id,
+        },
+        data: {
+          readOrNot: true,
+        },
+      });
+    }
   });
 
   res.json({

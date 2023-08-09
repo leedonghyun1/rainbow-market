@@ -17,15 +17,22 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             image: true,
             name: true,
             email: true,
+            messages:{
+              select:{
+                id:true,
+                readOrNot:true,
+              }
+            }
           },
         },
         product:{
           select:{
             name:true,
           }
-        }
+        },
       },
     });
+
     res.json({
       ok: true,
       rooms,

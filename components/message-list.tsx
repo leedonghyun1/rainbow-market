@@ -34,7 +34,7 @@ export default function MessageList({message, reversed, image, readOrNot}:Messag
       >
         {reversed ? (
           <div className="relative">
-            <div className="absolute left-5">
+            <div className={cls("absolute", readOrNot ? " left-5" : "left-7")}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

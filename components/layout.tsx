@@ -50,7 +50,7 @@ export default function Layout({
           <span className={cls(canGoBack ? "mx-auto" : "", "")}>{title}</span>
         ) : null}
         <div className="flex flex-row gap-2">
-          {notificationNum !== 0 ? (
+          {notificationNum ? (
             <div className="self-center pt-1 relative flex">
               <button
                 className="cursor-pointer"
@@ -73,13 +73,16 @@ export default function Layout({
                   />
                 </svg>
                 <div className="absolute left-2 bottom-1">
-                  <span className="text-[3px] bg-purple-500 text-white px-1 rounded-full">
-                    1
-                  </span>
+                  {notificationNum ? (
+                    <span className="text-[3px] bg-purple-500 text-white px-1 rounded-full">
+                      {notificationNum}
+                    </span>
+                  ) : null}
                 </div>
               </button>
             </div>
           ) : null}
+
           <div>
             {session && (
               <button

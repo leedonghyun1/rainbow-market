@@ -1,6 +1,6 @@
 import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from "next";
 import React, { use, useEffect, useState } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import useUser from "libs/client/useUser";
@@ -67,17 +67,18 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
     `/api/chat/product/${router.query.id}/message`
   );
   const { data: checkRoomAndMsg, mutate } = useSWR<RoomResponse>(
-    router.query.id ? `/api/rooms/${router.query.id}` : null, {
-      refreshInterval: 1000,
+    router.query.id ? `/api/rooms/${router.query.id}` : null,
+    {
+      refreshInterval: 500,
     }
   );
+
   const { data, mutate: boundMutate } = useSWR<RoomResponse>(
     `/api/rooms/${router.query.id}`,
-    { refreshInterval: 500 }
+    { refreshInterval: 1000, revalidateOnFocus: true }
   );
 
   const [ updateReadOrNot, {data: updateRoNdata , loading} ] = useMutation(`/api/chat/product/${router.query.id}/updateReadOrNot`);
-
   useEffect(() => {
     if (!data) return;
     if (user?.id === checkRoomAndMsg?.room?.productOwnerId || user?.id === checkRoomAndMsg?.room?.userId) {
@@ -140,7 +141,7 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
         </div>
         <div>
           <form onSubmit={handleSubmit(onValid)}>
-            <div className="py-2 pb-16 h-[50vh] overflow-y-scroll px-4 space-y-4">
+            <div className="py-2 pb-16 h-[65vh] overflow-y-scroll px-4 space-y-4">
               {checkRoomAndMsg?.room?.message?.map((messages) => (
                 <MessageList
                   key={messages.id}
