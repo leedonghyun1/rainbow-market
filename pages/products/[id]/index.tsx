@@ -38,6 +38,10 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
   );
   
   const { data:productRoomData } = useSWR<ItemDetailResponse>(`/api/products/${router.query.id}`);
+  const { data:findStar} = useSWR<ItemDetailResponse>(`/api/products/${router.query.id}/countStar`);
+
+  const star =  Math.floor(findStar?.product?.user?.star/20);
+
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/favorite`);
   const [toggleSold] = useMutation<SoldResponse>(
     `/api/products/${router.query.id}/sold`
@@ -144,18 +148,37 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
             ) : (
               <div className="w-12 h-12 rounded-full bg-slate-500 " />
             )}
-            <div className="text-sm text-gray-700 absolute left-14">
-              <p>이동현 님의 프로필</p>
+            <div className="text-lg font-semibold text-gray-500 absolute left-16">
+              <button
+                className="cursor-pointer"
+                onClick={() => {
+                  router.push(`/profile/${router.query.id}/sellerInfo`);
+                }}
+              >
+                {data.product.user.name}
+              </button>
             </div>
-            <div className="absolute text-sm font-semibold text-orange-500 flex flex-col items-center right-10">
+            <div className="absolute text-sm font-semibold text-purple-500 flex flex-col items-center right-12 w-10">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                height="1em"
-                viewBox="0 0 640 512"
+                fill="rgb(168 85 247)"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-5 h-5"
               >
-                <path d="M320 96C178.6 96 64 210.6 64 352v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C0 175.3 143.3 32 320 32s320 143.3 320 320v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C576 210.6 461.4 96 320 96zm0 192c-35.3 0-64 28.7-64 64v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352c0-70.7 57.3-128 128-128s128 57.3 128 128v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352c0-35.3-28.7-64-64-64zM160 352v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352c0-123.7 100.3-224 224-224s224 100.3 224 224v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352c0-88.4-71.6-160-160-160s-160 71.6-160 160z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+                />
               </svg>
-              <p>주황 등급</p>
+
+              <div className="w-full rounded-full h-2.5 bg-gray-200 mt-1">
+                <div
+                  className={cls(`bg-purple-400 h-2.5 rounded-full w-${star}`)}
+                ></div>
+              </div>
             </div>
             <button
               onClick={onFavClicked}

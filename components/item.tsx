@@ -33,8 +33,8 @@ export default function Item({ id, title, price, favorite, image, sold, room}: I
       <div className="flex items-end justify-end">
         <div
           className={cls(
-            "flex items-end justify-between py-1 px-6 rounded-xl text-sm mr-3",
-            sold === false ? "bg-slate-300" : "bg-purple-400"
+            "flex items-end justify-between py-1 px-6 rounded-xl text-xs mr-3",
+            sold === false ? "bg-purple-400 text-white font-semibold": "bg-slate-300" 
           )}
         >
           {sold === false ? "판매중" : "판매완료"}

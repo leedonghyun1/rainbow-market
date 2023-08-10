@@ -57,7 +57,8 @@ model User {
   emailVerified DateTime?
   image         String?
   phone         String?    @unique
-  notifications Int?
+  msgNotifications Int?
+  star Int?
   accounts      Account[]
   sessions      Session[]
   products      Product[]

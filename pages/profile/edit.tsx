@@ -7,6 +7,8 @@ import useMutation from "libs/client/useMutation";
 import useUser from "libs/client/useUser";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { ProductUserInfoResponse } from "./[id]/sellerInfo";
+import useSWR from "swr";
 
 interface EditProfileForm {
   image?: FileList;
@@ -29,10 +31,23 @@ export default function Edit() {
     formState: { errors },
   } = useForm<EditProfileForm>();
 
+  // const { data:productUserInfoData } = useSWR<ProductUserInfoResponse>(`/api/products/${router.query.id}/userInfo`);
+   
+  // const favorites = productUserInfoData?.product?.favorites?.length 
+  // const sold = productUserInfoData?.userSoldInfo?.length 
+  // const compeletedSold = productUserInfoData?.soldCompletedCount 
+  // const stream = productUserInfoData?.userStreamCount?.length 
+  // const countSum = favorites+sold+stream+compeletedSold
+
+  // const [ userGradeUpdate ] = useMutation(`/api/products/${router.query.id}/userInfo`);
+
   useEffect(() => {
-    if (user?.name) setValue("name", user.name);
-    if (user?.email) setValue("email", user.email);
-    if (user?.phone) setValue("phone", user.phone);
+    if(user){
+      if (user?.name) setValue("name", user.name);
+      if (user?.email) setValue("email", user.email);
+      if (user?.phone) setValue("phone", user.phone);
+      // userGradeUpdate({countSum})
+    }
   },[user, setValue]);
   // 유저 프로필 업데이트
   const [editProfile, { data, loading }] = useMutation("/api/users/me");

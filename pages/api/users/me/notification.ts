@@ -48,7 +48,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         id: user?.id,
       },
       data: {
-        notifications: +unreadMsgCount,
+        msgNotifications: +unreadMsgCount,
       },
     });
 

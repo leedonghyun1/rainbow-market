@@ -47,7 +47,10 @@ export default function Layout({
           </button>
         ) : null}
         {title ? (
-          <span className={cls(canGoBack ? "mx-auto" : "", "")}>{title}</span>
+          <>
+            {/* <span className={cls(canGoBack ? "mx-auto" : "", "")}>{title}</span> */}
+            <img src="/images/logo/transparent.svg" className={cls("h-10 w-auto",canGoBack ? "mx-auto" : "", "")} />
+          </>
         ) : null}
         <div className="flex flex-row gap-2">
           {notificationNum ? (

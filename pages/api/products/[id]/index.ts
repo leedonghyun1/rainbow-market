@@ -67,8 +67,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const isLiked = Boolean(
       await client.favorite.findFirst({
         where:{
-          productId: product.id,
-          userId: user.id,
+          productId: product?.id,
+          userId: user?.id,
         },
         select:{
           id:true,
@@ -93,7 +93,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     if(deleteProduct){
        await client.product.delete({
          where: {
-           id: deleteProduct.id + "",
+           id: deleteProduct?.id + "",
          },
        });
     }
