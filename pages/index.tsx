@@ -29,7 +29,7 @@ const Home: NextPage = () => {
   const { data } = useSWR<ProductReponse>("/api/products");
   const { data: session } = useSession();
   const { data: notificationUpdate } = useSWR("/api/users/me/notification");
-  const { data: updateStar} = useSWR("/api/users/me/star");
+  const { data: updateStar} = useSWR("/api/users/me/info");
   const { register, handleSubmit, watch, reset } = useForm();
   const [login, { loading, data: tokenData, error }] =
     useMutation<loginMutation>("/api/users/token");
