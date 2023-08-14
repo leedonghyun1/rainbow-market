@@ -8,6 +8,7 @@ import useMutation from "../libs/client/useMutation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import FloatingButton from "@components/floating-button";
+import { useFormatter } from "next-intl";
 
 export interface ProductWithCount extends Product {
   _count: {
@@ -15,6 +16,7 @@ export interface ProductWithCount extends Product {
     room:number;
   };
   sold:Sold[];
+  updatedAt:Date;
 }
 
 interface ProductReponse {
@@ -25,8 +27,10 @@ interface loginMutation {
   ok: Boolean;
 }
 
+
 const Home: NextPage = () => {
   const { data } = useSWR<ProductReponse>("/api/products");
+  
   const { data: session } = useSession();
   const { data: notificationUpdate } = useSWR("/api/users/me/notification");
   const { data: updateStar} = useSWR("/api/users/me/info");
@@ -45,14 +49,25 @@ const Home: NextPage = () => {
       login(session);
     }
   }, []);
-  
 
   const searchItem = (item) => {
     search(item);
     reset();
     afterSearch(true);
   }
-  
+
+  const format = useFormatter();
+
+  const calTime =(time)=>{
+    const dateTime = new Date(time);
+    const now = new Date(Date.now());
+    const result = format.relativeTime(dateTime, now);
+    return result;
+  }
+
+
+
+
   return (
     <div>
       <Layout seoTitle="슈퍼" hasTabBar canGoBack title="슈퍼" notificationNum={notificationUpdate?.unreadMsgCount}>
@@ -62,7 +77,7 @@ const Home: NextPage = () => {
               {...register("find")}
               placeholder="슈퍼 검색"
               type="text"
-              className="w-2/3 h-9 rounded-2xl self-center hover:outline-purple-400 placeholder-slate-400"
+              className="w-2/3 h-9 rounded-2xl self-center hover:outline-purple-400 placeholder-slate-400 transition-all"
             />
             {beforeSearch === false
               ? data?.products?.map((product) => (
@@ -75,6 +90,7 @@ const Home: NextPage = () => {
                     image={product.uploadVideo}
                     sold={product.sold[0].saleIs}
                     room={product._count?.room || 0}
+                    time={calTime(product.updatedAt)}
                   />
                 ))
               : searchData

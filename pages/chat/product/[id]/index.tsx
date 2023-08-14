@@ -149,6 +149,7 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
                   reversed={messages.user?.id === user?.id ? true : false}
                   image={messages.user?.image}
                   readOrNot={messages.readOrNot}
+                  status={true}
                 />
               ))}
             </div>

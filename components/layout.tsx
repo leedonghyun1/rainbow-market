@@ -49,7 +49,10 @@ export default function Layout({
         {title ? (
           <>
             {/* <span className={cls(canGoBack ? "mx-auto" : "", "")}>{title}</span> */}
-            <img src="/images/logo/transparent.svg" className={cls("h-10 w-auto",canGoBack ? "mx-auto" : "", "")} />
+            <img
+              src="/images/logo/transparent.svg"
+              className={cls("h-10 w-auto", canGoBack ? "mx-auto" : "", "")}
+            />
           </>
         ) : null}
         <div className="flex flex-row gap-2">
@@ -90,17 +93,43 @@ export default function Layout({
             {session && (
               <button
                 onClick={() => signOut({ callbackUrl: "/login" })}
-                className="mr-3 text-xs right-1 bg-slate-200 p-1 rounded-lg hover:bg-red-400 hover:text-white hover:font-bold"
+                className="mr-3 p-1 rounded-lg hover:text-red-500 text-purple-500 transition-colors"
               >
-                Log Out
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"
+                  />
+                </svg>
               </button>
             )}
             {!session && (
               <button
                 onClick={() => router.replace("/login")}
-                className="absolute mr-3 text-xs right-1 bg-slate-200 p-1 rounded-lg hover:bg-purple-400 hover:text-white hover:font-bold"
+                className="mr-3 p-1 pt-2 text-purple-500 hover:text-red-500 transition-colors"
               >
-                Log In
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5.636 5.636a9 9 0 1012.728 0M12 3v9"
+                  />
+                </svg>
               </button>
             )}
           </div>

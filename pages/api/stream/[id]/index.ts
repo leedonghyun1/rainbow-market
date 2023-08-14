@@ -16,7 +16,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
         id: id+"",
       },
       include: {
-        message: {
+        streamMessage: {
           select: {
             id: true,
             message: true,

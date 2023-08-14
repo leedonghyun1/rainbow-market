@@ -103,7 +103,6 @@ export default function Info() {
             ></div>
           </div>
         </div>
-
         <Input
           register={register("name")}
           required={false}

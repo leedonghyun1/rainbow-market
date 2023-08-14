@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Layout from "components/layout";
-import Message from "@components/message-list";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { Stream, User } from "@prisma/client";
@@ -9,6 +8,9 @@ import { useForm } from "react-hook-form";
 import useMutation from "libs/client/useMutation";
 import useUser from "libs/client/useUser";
 import Image from "next/image";
+import MessageList from "@components/message-list";
+import { io } from "socket.io-client";
+import SocketIOClient from "socket.io-client";
 
 interface StreamMessage {
   message: string;
@@ -20,7 +22,7 @@ interface StreamMessage {
 }
 
 interface StreamWithMessage extends Stream {
-  message: StreamMessage[];
+  streamMessage: StreamMessage[];
 }
 
 interface StreamResponse {
@@ -38,39 +40,67 @@ interface UserResponse {
 const Streams: NextPage = () => {
   const router = useRouter();
   const { user } = useUser();
-  const { data, mutate } = useSWR<StreamResponse>(
+
+  const { data:streamInfo, mutate, isLoading } = useSWR<StreamResponse>(
     router.query.id ? `/api/stream/${router.query.id}` : null,
-    { refreshInterval: 1000 }
+    { refreshInterval: 500 }
   );
 
   const { data: userData } = useSWR<UserResponse>("/api/users/me");
-  // const { register, handleSubmit, reset } = useForm<MessageFrom>();
-  // const [ sendMessage, { loading, data:sendMessageData }] = useMutation(`/api/streams/${router.query.id}/messages`);
-  // const onValid=(message:MessageFrom)=>{
-  //   if (loading) return;
-  //   mutate(
-  //     (prev) =>
-  //       prev &&
-  //       ({
-  //         ...prev,
-  //         stream: {
-  //           ...prev.stream,
-  //           message: [
-  //             ...prev.stream.message,
-  //             { id: Date.now(), message: message.message, user: { ...user } },
-  //           ],
-  //         },
-  //       } as any)
-  //   , false);
-  //   sendMessage(message);
-  //   reset();
-  // }
+  const { register, handleSubmit, reset } = useForm<MessageFrom>();
+  const [connected, setConnected] = useState<boolean>(false);
+
+  useEffect(():any=>{
+   
+    const socket = io("http://localhost:3000", {
+     path:"/api/chat/stream/socketio",
+    });
+
+    socket.on("connection",(()=>{
+      console.log("Socket Connected!", socket.id);
+      setConnected(true);
+    }));
+
+    if (socket) return () => socket.disconnect();
+  })
+
+  const sendMessage = async (message) => {
+    const resp = await fetch(`/api/chat/stream/${router.query.id}/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+  };
+
+  const onValid=(message:MessageFrom)=>{
+    if (isLoading) return;
+
+    mutate(
+      (prev) =>
+        prev &&
+        ({
+          ...prev,
+          stream: {
+            ...prev.stream,
+            message: [
+              ...prev.stream.streamMessage,
+              { id: Date.now(), message: message, user: { ...user } },
+            ],
+          },
+        } as any)
+    , false);
+
+    sendMessage(message);
+    reset();
+  }
   return (
     <Layout canGoBack seoTitle={`${userData?.profile?.name} Live`} title="Live">
       <div className="py-10 px-4  space-y-4">
         <div className="w-full rounded-md shadow-sm aspect-video ">
           <iframe
-            src={`https://iframe.videodelivery.net/${data?.stream?.cloudflareId}`}
+            src={`https://iframe.videodelivery.net/${streamInfo?.stream?.cloudflareId}`}
             className="w-full aspect-video rounded-xl"
             allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
             allowFullScreen={true}
@@ -104,33 +134,35 @@ const Streams: NextPage = () => {
         </div>
         <div className="mt-8 ml-3">
           <h1 className="text-3xl font-bold text-slate-600">
-            {data?.stream?.name}
+            {streamInfo?.stream?.name}
           </h1>
           <span className="text-sm block mt-3 text-slate-600">
-            {`${data?.stream?.price} 원`}
+            {`${streamInfo?.stream?.price} 원`}
           </span>
-          <p className="my-6 text-gray-700">{data?.stream?.description}</p>
+          <p className="my-6 text-gray-700">{streamInfo?.stream?.description}</p>
           <div className="bg-purple-300 overflow-scroll text-white flex flex-col items-left justify-center gap-2 p-2 rounded-xl">
             <span>Stream Key (secret)</span>
             <span>
               <span>KEY: </span>
-              {data?.stream?.cloudflareKey}
+              {streamInfo?.stream?.cloudflareKey}
             </span>
             <span>
               <span>URL: </span>
-              {data?.stream?.cloudflareUrl}
+              {streamInfo?.stream?.cloudflareUrl}
             </span>
           </div>
         </div>
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Live Chat</h2>
-          {/* <form onSubmit={handleSubmit(onValid)}>
-            <div className="py-10 pb-16 h-[50vh] overflow-y-scroll  px-4 space-y-4">
-              {data?.stream.message.map((messages) => (
-                <Message
+          <form onSubmit={handleSubmit(onValid)}>
+            <div className="py-2 pb-16 h-[65vh] overflow-y-scroll px-4 space-y-4">
+              {streamInfo?.stream?.streamMessage?.map((messages) => (
+                <MessageList
                   key={messages.id}
                   message={messages.message}
-                  reversed={messages.user.id === user.id ? true : false}
+                  reversed={messages.user?.id === user?.id ? true : false}
+                  image={messages.user?.image}
+                  status={false}
                 />
               ))}
             </div>
@@ -139,16 +171,16 @@ const Streams: NextPage = () => {
                 <input
                   {...register("message", { required: true })}
                   type="text"
-                  className="shadow-sm rounded-full w-full border-gray-300 focus:ring-orange-500 focus:outline-none pr-12 focus:border-orange-500"
+                  className="shadow-sm rounded-full w-full border-gray-300 focus:ring-purple-500 focus:outline-none pr-12 focus:border-purple-500"
                 />
                 <div className="absolute inset-y-0 flex py-1.5 pr-1.5 right-0">
-                  <button className="flex focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 items-center bg-orange-500 rounded-full px-3 hover:bg-orange-600 text-sm text-white">
+                  <button className="flex focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 items-center bg-purple-500 rounded-full px-3 hover:bg-purple-600 text-sm text-white">
                     &rarr;
                   </button>
                 </div>
               </div>
             </div>
-          </form> */}
+          </form>
         </div>
       </div>
     </Layout>
