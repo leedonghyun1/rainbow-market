@@ -9,6 +9,11 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import FloatingButton from "@components/floating-button";
 import { useFormatter } from "next-intl";
+import Script from "next/script";
+import { initializeApp } from 'firebase/app'
+import { getMessaging, onMessage, getToken } from 'firebase/messaging'
+import { ToastContainer, toast } from "react-toastify";
+import { notify } from "@libs/client/notify";
 
 export interface ProductWithCount extends Product {
   _count: {
@@ -44,7 +49,42 @@ const Home: NextPage = () => {
 
   const [beforeSearch, afterSearch] = useState(false);
 
+  const onMessageFCM = async()=>{
+    const permission = await Notification.requestPermission();
+    if(permission !== "granted") return;
+
+    const firebaseApp = initializeApp({
+      apiKey: "AIzaSyCQ5Ogcj7QavBv0DTseTT6aSMNgKOg1nJ4",
+      authDomain: "rainbow-super.firebaseapp.com",
+      projectId: "rainbow-super",
+      storageBucket: "rainbow-super.appspot.com",
+      messagingSenderId: "392209069253",
+      appId: "1:392209069253:web:c0a8256ba2428344a12cac",
+      measurementId: "G-89KNV1P0ML"
+    })
+
+    const messaging = getMessaging(firebaseApp);
+
+    getToken(messaging, { vapidKey: "BFMfY0YsM5d25VKBkpAKEbcUeIXllR0QHUg8mlDw6DXqgsrWbtTiqyUIqAFwwPxyHYoNpa-0qgqT03-j-EsMw6o" }).then((currentToken) => {
+      if (currentToken) {
+        // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
+        // currentToken을 db에 개인에게 저장 후 나중에 notifications을 보낼 때 이용 필요.
+        console.log(currentToken)
+      } else {
+        console.log('No registration token available. Request permission to generate one.')
+      }
+    }).catch((err) => {
+      console.log('An error occurred while retrieving token. ', err)
+    })
+ 
+    // 메세지가 수신되면 역시 콘솔에 출력합니다.
+    onMessage(messaging, (payload) => {
+      console.log('Message received. ', payload)
+    })
+  }
+
   useEffect(() => {
+    onMessageFCM();
     if (session) {
       login(session);
     }
@@ -65,12 +105,16 @@ const Home: NextPage = () => {
     return result;
   }
 
-
-
-
   return (
     <div>
-      <Layout seoTitle="슈퍼" hasTabBar canGoBack title="슈퍼" notificationNum={notificationUpdate?.unreadMsgCount}>
+      
+      <Layout
+        seoTitle="슈퍼"
+        hasTabBar
+        canGoBack
+        title="슈퍼"
+        notificationNum={notificationUpdate?.unreadMsgCount}
+      >
         <form onSubmit={handleSubmit(searchItem)}>
           <div className="flex flex-col space-y-5  py-10">
             <input
@@ -79,6 +123,7 @@ const Home: NextPage = () => {
               type="text"
               className="w-2/3 h-9 rounded-2xl self-center hover:outline-purple-400 placeholder-slate-400 transition-all"
             />
+
             {beforeSearch === false
               ? data?.products?.map((product) => (
                   <Item

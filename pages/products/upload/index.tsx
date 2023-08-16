@@ -8,6 +8,7 @@ import TextArea from "components/textarea";
 import useMutation from "libs/client/useMutation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { notify } from "@libs/client/notify";
 
 interface UploadProductProps {
   name: string;

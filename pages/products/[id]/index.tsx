@@ -8,6 +8,7 @@ import useMutation from "libs/client/useMutation";
 import useUser from "libs/client/useUser";
 import cls from "libs/client/utils";
 import useSWR from "swr";
+import { useEffect } from "react";
 
 interface ProductWitheUser extends Product {
   user: User;
@@ -77,12 +78,11 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
   const [ createRoom ] = useMutation(`/api/rooms/${router.query.id}`);
 
   const onRoomValid = () => {
-    console.log(productRoomData);
-    if (productRoomData.product?.room?.length === 0) {
+    if (productRoomData?.product?.room?.length === 0) {
       createRoom(data.product.userId);
       router.push(`/chat/product/${router.query.id}`);
     } else {
-      productRoomData.product?.room?.map((room) => {
+      productRoomData?.product?.room?.map((room) => {
         if (user?.id === room.userId || user?.id === room.productOwnerId) {
           router.push(`/chat/product/${router.query.id}`);
         } else {
@@ -95,7 +95,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
   };
 
   return (
-    <Layout canGoBack seoTitle="상품상세" hasTabBar title="슈퍼">
+    <Layout canGoBack seoTitle="상품상세" title="슈퍼">
       {data ? (
         <div className="px-4 py-10">
           <div className="mb-8">
@@ -111,7 +111,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               </div>
             )}
           </div>
-          {user && user.id === data?.product?.userId ? (
+          {user && user?.id === data?.product?.userId ? (
             <div className="flex flex-row justify-between">
               <button
                 className={cls(
@@ -132,7 +132,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               </button>
             </div>
           ) : null}
-          {user && user.id !== data?.product?.userId ? (
+          {user && user?.id !== data?.product?.userId ? (
             <Button large text="사장님에게 채팅톡톡" onClick={onRoomValid} />
           ) : null}
 
@@ -155,7 +155,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
                   router.push(`/profile/${router.query.id}/sellerInfo`);
                 }}
               >
-                {data.product.user.name}
+                {data?.product?.user?.name}
               </button>
             </div>
             <div className="absolute text-sm font-semibold text-purple-500 flex flex-col items-center right-12 w-10">
@@ -189,7 +189,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
                   : "text-gray-500  bg-white hover:bg-gray-300"
               )}
             >
-              {user && user.id !== data?.product?.userId ? (
+              {user && user?.id !== data?.product?.userId ? (
                 data?.isLiked ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -216,7 +216,8 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               ) : null}
             </button>
           </div>
-          <div className="mt-8 mb-8 relative">
+          {/* 상품이름, 링크, 가격 */}
+          <div className="mt-8 mb-8 relative border-t border-b pt-2 pb-2 bg-slate-50">
             <div className="flex items-center justify-between ">
               <div className="text-lg text-gray-600 font-semibold pl-2">
                 <span>{data?.product?.name}</span>
@@ -239,7 +240,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
             </div>
           </div>
           <div className="mt-10">
-            <h2 className="text-lg font-bold text-gray-500">비슷한 관심상품</h2>
+            <h2 className="text-lg font-bold text-gray-500">이 글과 함께 둘러봤어요</h2>
             <div className="mt-6 grid grid-cols-2 gap-4">
               {data?.relatedProducts?.map((relatedProd) => (
                 <div key={relatedProd?.id}>
@@ -259,7 +260,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               ))}
             </div>
           </div>
-          {user && user.id === data?.product?.userId ? (
+          {user && user?.id === data?.product?.userId ? (
             <div>
               <Button
                 className="w-1/2"

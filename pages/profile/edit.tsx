@@ -10,6 +10,8 @@ import { useForm } from "react-hook-form";
 import { ProductUserInfoResponse } from "./[id]/sellerInfo";
 import useSWR from "swr";
 import cls from "@libs/client/utils";
+import { notify } from "@libs/client/notify";
+import Error from "next/error";
 
 interface EditProfileForm {
   image?: FileList;
@@ -18,6 +20,12 @@ interface EditProfileForm {
   phone?: string;
   formErrors?: string;
 }
+
+interface EditProfileResponse {
+  ok: true;
+  error:string;
+}
+
 
 export default function Edit() {
   // 유저 프로필 현재 상태 표시
@@ -40,7 +48,7 @@ export default function Edit() {
     }
   }, [user, setValue]);
 
-  const [editProfile, { data, loading }] = useMutation("/api/users/me");
+  const [editProfile, { data, loading }] = useMutation<EditProfileResponse>("/api/users/me");
 
   const { data: userInfo } = useSWR("/api/users/me/info");
 
@@ -60,6 +68,10 @@ export default function Edit() {
       } = await (await fetch(uploadURL, { method: "POST", body: form })).json();
 
       editProfile({ phone, name, imageId: id });
+
+      if(data?.ok){
+        notify("프로필 변경");
+      }
     } else {
       editProfile({ phone, name });
     }
@@ -134,7 +146,7 @@ export default function Edit() {
             <div className="ml-4 w-full rounded-full h-2.5 bg-gray-200">
               <div
                 className={cls(
-                  userInfo.countSum
+                  userInfo?.countSum
                     ? `bg-purple-400 h-2.5 rounded-full w-${userInfo.countSum}`
                     : null
                 )}
@@ -164,7 +176,7 @@ export default function Edit() {
               <div className="bg-gray-50 rounded-r-lg border border-gray-200 w-full flex flex-row">
                 <div className="self-center">
                   <span className="ml-2">좋아요</span>
-                  <span className="ml-2">{userInfo.favorites} 회</span>
+                  <span className="ml-2">{userInfo?.favorites || 0} 회</span>
                 </div>
               </div>
             </div>
@@ -188,7 +200,7 @@ export default function Edit() {
               <div className="bg-gray-50 rounded-r-lg border border-gray-200 w-full flex flex-row">
                 <div className="self-center">
                   <span className="ml-2">판매중</span>
-                  <span className="ml-2">{userInfo.sold} 회</span>
+                  <span className="ml-2">{userInfo?.sold || 0} 회</span>
                 </div>
               </div>
             </div>
@@ -212,7 +224,7 @@ export default function Edit() {
               <div className="bg-gray-50 rounded-r-lg border border-gray-200 w-full flex flex-row">
                 <div className="self-center">
                   <span className="ml-2">판매완료</span>
-                  <span className="ml-2">{userInfo.compeletedSold} 회</span>
+                  <span className="ml-2">{userInfo?.compeletedSold || 0} 회 </span>
                 </div>
               </div>
             </div>
@@ -236,7 +248,7 @@ export default function Edit() {
               <div className="bg-gray-50 rounded-r-lg border border-gray-200 w-full flex flex-row">
                 <div className="self-center">
                   <span className="ml-2">라이브 스트리밍</span>
-                  <span className="ml-2">{userInfo.stream} 회</span>
+                  <span className="ml-2">{userInfo?.stream || 0} 회</span>
                 </div>
               </div>
             </div>
