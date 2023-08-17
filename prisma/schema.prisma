@@ -59,6 +59,7 @@ model User {
   phone         String?    @unique
   msgNotifications Int?
   star Int?
+  fcmToken String?
   accounts      Account[]
   sessions      Session[]
   products      Product[]

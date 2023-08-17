@@ -28,9 +28,11 @@ export default function MessageList({
         className="w-8 h-8 rounded-full bg-slate-400"
         src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${image}/avatar`}
       />
-      <div className="w-1/2 text-sm text-gray-700 p-2 border border-gray-300 rounded-md ml-3">
+      {reversed ? <div className="w-1/2 text-sm p-2 border bg-purple-300 border-purple-300 text-white font-semibold rounded-md ml-3">
         <p>{message}</p>
-      </div>
+      </div> : <div className="w-1/2 text-sm text-gray-700 p-2 border  border-gray-300 rounded-md ml-3">
+        <p>{message}</p>
+      </div>}
       
       {status ?<>
         <div

@@ -69,7 +69,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     });
 
 
-
     res.json({
       ok: true,
       room,

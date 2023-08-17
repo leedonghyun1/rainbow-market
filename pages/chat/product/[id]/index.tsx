@@ -1,18 +1,15 @@
-import type { GetServerSideProps, GetStaticPaths, GetStaticProps, NextPage } from "next";
-import React, { use, useEffect, useState } from "react";
-import useSWR, { useSWRConfig } from "swr";
+import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import React, { useEffect } from "react";
+import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import useUser from "libs/client/useUser";
-import { Message, Product, Room, Sold, User } from "@prisma/client";
+import { Product, Room, Sold, User } from "@prisma/client";
 import Layout from "components/layout";
 import useMutation from "@libs/client/useMutation";
 import MessageList from "@components/message-list";
 import client from "@libs/server/client"
-import { getSession } from "next-auth/react";
 import cls from "@libs/client/utils";
-import message from "pages/api/chat/product/[id]/message";
-
 
 interface ProductRoomWithMessage {
   message:string;
@@ -56,10 +53,15 @@ interface RoomResponse {
   ok: boolean;
   room: RoomWithMessage;
 }
+interface FcmTokenResponse{
+  ok:boolean;
+  fcmToken:string;
+}
 
 const ChatDetail: NextPage<ProductResponse> = ({product}) => {
   const router = useRouter();
   const { user } = useUser();
+
 
   const { register, handleSubmit, reset } = useForm<MessageFrom>();
 
@@ -79,6 +81,9 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
   );
 
   const [ updateReadOrNot, {data: updateRoNdata , loading} ] = useMutation(`/api/chat/product/${router.query.id}/updateReadOrNot`);
+
+  const [ fcmNotisHandler ] = useMutation<FcmTokenResponse>("/api/chat/fcmNotisHandler");
+
   useEffect(() => {
     if (!data) return;
     if (user?.id === checkRoomAndMsg?.room?.productOwnerId || user?.id === checkRoomAndMsg?.room?.userId) {
@@ -87,9 +92,25 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
       }) as any,false)
       updateReadOrNot({ checkRoomAndMsg });
     }
+
   },[boundMutate]);
 
-  const onValid = (message: MessageFrom) => {
+  //usePushNotification custom hook
+
+  const usePushNotification = (notisTitle, notisBody ) =>{
+
+    const title = notisTitle;
+    const body = notisBody;
+    const icon = "/images/logo/transparent.svg";
+    const options = { body, icon}
+
+   
+    const notif = new Notification(title, options);
+  }
+  // FCM target notification.
+
+  const onValid = async (message: MessageFrom) => {
+    // const notisResult = await Notification.requestPermission();
     sendMessage({ message, checkRoomAndMsg });
     mutate(
       (prev) =>
@@ -106,7 +127,18 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
         } as any),
       false
     );
+
+    if (checkRoomAndMsg?.room?.userId !== user?.id) {
+      const userid = checkRoomAndMsg?.room?.userId;
+      fcmNotisHandler({ message, userid });
+    } 
+    if (checkRoomAndMsg?.room?.productOwnerId !== user?.id) {
+      const userid = checkRoomAndMsg?.room?.productOwnerId;
+      fcmNotisHandler({ message, userid });
+    }
+
     reset();
+    // usePushNotification(product?.user?.name, message.message);
   };
 
   return (

@@ -60,7 +60,7 @@ const Chats: NextPage = () => {
                   <p className="text-gray-700 p-1">{room.product.name}</p>
                   <div className="self-center pb-1">
                     <span className="bg-purple-500 px-1 text-white rounded-full text-xs">
-                      7
+                     
                     </span>
                   </div>
                 </div>

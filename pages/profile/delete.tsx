@@ -6,7 +6,7 @@ import Input from "components/input";
 import Layout from "components/layout";
 import useMutation from "libs/client/useMutation";
 import useUser from "libs/client/useUser";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 interface EditProfileForm {
