@@ -2,11 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import withHandler from "libs/server/withHandler";
 import { withApiSession } from "libs/server/withSession";
 
-export function count({rooms}){
-
-
-}
-
 async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === "GET") {

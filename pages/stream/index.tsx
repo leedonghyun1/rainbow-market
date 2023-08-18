@@ -5,26 +5,44 @@ import Link from "next/link";
 import FloatingButton from "components/floating-button";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { Stream } from "@prisma/client";
+import { Stream, User } from "@prisma/client";
 import Image from "next/image"; 
+import { priceToString } from "@components/item";
+import { useFormatter } from "next-intl";
+
+
+interface StreamWithUser extends Stream{
+  user:User;
+}
 
 interface StreamResponse {
   ok: boolean;
-  stream: Stream[];
+  stream: StreamWithUser[];
 }
 
 const Streams: NextPage = () => {
   const { data } = useSWR<StreamResponse>(`/api/stream`);
 
+
+
+  const format = useFormatter();
+
+  const calTime = (time) => {
+    const dateTime = new Date(time);
+    const now = new Date(Date.now());
+    const result = format.relativeTime(dateTime, now);
+    return result;
+  };
+
   return (
     <Layout canGoBack hasTabBar title="Live" seoTitle="Live">
-      <div className="py-10 divide-y-[1px] space-y-4 px-2">
+      <div className="py-10 px-2 grid grid-cols-2">
         {data
           ? data?.stream?.map((streams) => (
               <Link
                 key={streams.id}
                 href={`/stream/${streams.id}`}
-                className="pt-4 block  px-4"
+                className="pt-4 block px-4"
               >
                 {streams?.cloudflareId ? (
                   <iframe
@@ -35,9 +53,31 @@ const Streams: NextPage = () => {
                 ) : (
                   <div className="w-full relative rounded-md shadow-sm bg-slate-300 aspect-video" />
                 )}
-                <h1 className="text-2xl mt-2 font-bold text-gray-900">
-                  {streams.name}
-                </h1>
+                <div className="flex flex-row mt-2">
+                  {streams.user?.image ? (
+                    <Image
+                      src={`https://imagedelivery.net/u7wvD59l3UZuCFJ8LR4Yaw/${streams.user.image}/avatar`}
+                      width={40}
+                      height={40}
+                      className="w-12 h-12 rounded-full self-center"
+                      alt={""}
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-slate-500 " />
+                  )}
+                  <div className="ml-2 flex flex-col">
+                    <span className="text-sm mt-2 text-slate-700">
+                      {streams.name}
+                    </span>
+                    <div className="text-[0.5rem] text-slate-400">
+                      <span>{calTime(streams.updatedAt)}</span>
+                      <span>{` • 시청자수 20명`}</span>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-700">
+                      {priceToString(streams.price)}원
+                    </span>
+                  </div>
+                </div>
               </Link>
             ))
           : null}

@@ -31,6 +31,10 @@ const Chats: NextPage = () => {
 
   const { data } = useSWR<RoomListResponse>("/api/rooms/findMyRooms")
 
+  ///가지고 오는거는 했어. 그다음에 읽었을 때는?
+
+  console.log(data);
+
   return (
     <Layout canGoBack title="Chat" seoTitle="채팅내역" hasTabBar>
       <div className="py-10 divide-y-[1px] ">
@@ -59,9 +63,11 @@ const Chats: NextPage = () => {
                   </p>
                   <p className="text-gray-700 p-1">{room.product.name}</p>
                   <div className="self-center pb-1">
-                    <span className="bg-purple-500 px-1 text-white rounded-full text-xs">
-                     
-                    </span>
+                    {room.unreadMsgs ? (
+                      <span className="bg-purple-500 px-1 text-white rounded-full text-xs">
+                        {room.unreadMsgs || 0}
+                      </span>
+                    ) : null}
                   </div>
                 </div>
                 <p className="text-sm text-gray-500">{room.lastChat}</p>

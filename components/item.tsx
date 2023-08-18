@@ -13,8 +13,8 @@ interface ItemProps {
   time?: string;
 }
 
-function priceToString(price) {
-  return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+export function priceToString(price) {
+  return price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 export default function Item({

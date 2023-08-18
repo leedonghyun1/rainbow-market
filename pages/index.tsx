@@ -11,7 +11,6 @@ import FloatingButton from "@components/floating-button";
 import { useFormatter } from "next-intl";
 import { initializeApp } from 'firebase/app'
 import { getMessaging, onMessage, getToken } from 'firebase/messaging'
-import { onBackgroundMessage } from "firebase/messaging/sw";
 
 
 export interface ProductWithCount extends Product {
@@ -105,14 +104,14 @@ const Home: NextPage = () => {
     afterSearch(true);
   }
 
-  const format = useFormatter();
+ const format = useFormatter();
 
-  const calTime =(time)=>{
-    const dateTime = new Date(time);
-    const now = new Date(Date.now());
-    const result = format.relativeTime(dateTime, now);
-    return result;
-  }
+ const calTime = (time) => {
+   const dateTime = new Date(time);
+   const now = new Date(Date.now());
+   const result = format.relativeTime(dateTime, now);
+   return result;
+ };
 
   return (
     <div>

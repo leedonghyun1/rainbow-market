@@ -9,29 +9,48 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     } = req;
     const rooms = await client.room.findMany({
       where: {
-        productOwnerId: user.id + "",
+        productOwnerId: user?.id + "",
       },
       include: {
         user: {
           select: {
+            id: true,
             image: true,
             name: true,
             email: true,
-            messages:{
-              select:{
-                id:true,
-                readOrNot:true,
-              }
-            }
+            messages: {
+              select: {
+                id: true,
+                readOrNot: true,
+              },
+            },
           },
         },
-        product:{
-          select:{
-            name:true,
-          }
+        product: {
+          select: {
+            name: true,
+          },
         },
       },
     });
+
+    let unreadMsgCount=0;
+
+    rooms.map((room)=>{
+      room.user.messages.map(async(message)=>{
+        if(message.readOrNot===false){
+          unreadMsgCount += 1;
+          await client.room.update({
+            where: {
+              id: room?.id,
+            },
+            data: {
+              unreadMsgs: unreadMsgCount,
+            },
+          });
+        }
+      })
+    })
 
     res.json({
       ok: true,

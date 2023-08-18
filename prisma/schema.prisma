@@ -163,6 +163,7 @@ model Room {
   lastChat       String?
   timeOfLastChat DateTime?
   productOwnerId String?
+  unreadMsgs Int?
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId         String
   product        Product   @relation(fields: [productId], references: [id], onDelete: Cascade)

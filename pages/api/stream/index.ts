@@ -55,6 +55,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse<ResponsType>) {
     } = req;
     const stream = await client.stream.findMany({
       take: 10,
+      include:{
+        user:{
+         select:{
+          image:true
+         }
+        }
+      }
     });
     res.json({
       ok: true,

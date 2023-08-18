@@ -8,7 +8,9 @@ import useMutation from "libs/client/useMutation";
 import useUser from "libs/client/useUser";
 import cls from "libs/client/utils";
 import useSWR from "swr";
-import { useEffect } from "react";
+import Link from "next/link";
+import { useFormatter } from "next-intl";
+import { priceToString } from "@components/item";
 
 interface ProductWitheUser extends Product {
   user: User;
@@ -16,7 +18,7 @@ interface ProductWitheUser extends Product {
   room: Room[];
 }
 
-interface ItemDetailResponse {
+export interface ItemDetailResponse {
   ok: boolean;
   product: ProductWitheUser;
   relatedProducts: Product[];
@@ -42,6 +44,15 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
   const { data:findStar} = useSWR<ItemDetailResponse>(`/api/products/${router.query.id}/countStar`);
 
   const star =  Math.floor(findStar?.product?.user?.star/20);
+
+  const format = useFormatter();
+
+  const calTime = (time) => {
+    const dateTime = new Date(time);
+    const now = new Date(Date.now());
+    const result = format.relativeTime(dateTime, now);
+    return result;
+  };
 
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/favorite`);
   const [toggleSold] = useMutation<SoldResponse>(
@@ -217,30 +228,51 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
             </button>
           </div>
           {/* 상품이름, 링크, 가격 */}
-          <div className="mt-8 mb-8 relative border-t border-b pt-2 pb-2 bg-slate-50">
-            <div className="flex items-center justify-between ">
-              <div className="text-lg text-gray-600 font-semibold pl-2">
-                <span>{data?.product?.name}</span>
-              </div>
-              <div className="text-gray-700 font-semibold text-lg">
-                <span>{data?.product?.price}</span>
-                <span>₩</span>
+          <div className="border-t border-b mt-8 mb-10 ">
+            <div className="mt-6 mb-1 relative">
+              <div className="flex items-center justify-between ">
+                <div className="text-lg text-gray-600 font-semibold pl-2">
+                  <span>{data?.product?.name}</span>
+                </div>
+                <div className="text-gray-700 font-semibold text-sm">
+                  <span>{priceToString(data?.product?.price)}</span>
+                  <span className="ml-1 text-xs text-slate-500">원</span>
+                </div>
               </div>
             </div>
-            <div>
-              <span className="left-10">{data?.product?.link}</span>
+            <div className="mb-6">
+              <div className="px-2 flex flex-col">
+                <div className="underline text-xs text-slate-400">
+                  <span>{calTime(data?.product?.updatedAt)}</span>
+                  <span> • 조회수 2회</span>
+                  <span> • 좋아요 5회</span>
+                </div>
+                <span className="text-sm mt-5">
+                  {data?.product?.description}
+                </span>
+              </div>
             </div>
           </div>
+          <div className="px-2 flex flex-col mt-5">
+            <span className="text-sm text-gray-700 font-semibold mb-3 bg-slate-200 p-1 rounded-md w-1/4 text-center">
+              온라인 구매 가능 링크
+            </span>
+            <Link href={data?.product?.link} className="text-xs w-1/4">
+              {data?.product?.link}
+            </Link>
+          </div>
           <div>
-            <div className="px-2 flex flex-col">
-              <span className="text-lg text-gray-700 font-semibold mb-3">
-                슈퍼설명
+            <div className="px-2 flex flex-col mt-5">
+              <span className="text-sm text-gray-700 font-semibold mb-3 bg-slate-200 p-1 rounded-md w-1/4 text-center">
+                거래 희망 장소
               </span>
-              <span>{data?.product?.description}</span>
+              <span className="text-xs">왕십리역 3번 출구</span>
             </div>
           </div>
           <div className="mt-10">
-            <h2 className="text-lg font-bold text-gray-500">이 글과 함께 둘러봤어요</h2>
+            <h2 className="text-lg font-bold text-gray-500">
+              이 글과 함께 둘러봤어요
+            </h2>
             <div className="mt-6 grid grid-cols-2 gap-4">
               {data?.relatedProducts?.map((relatedProd) => (
                 <div key={relatedProd?.id}>
@@ -252,9 +284,9 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
                   ) : (
                     <div className="h-56 w-full mb-4 bg-slate-300 rounded-md" />
                   )}
-                  <h3 className="text-gray-700 -mb-1">{relatedProd?.name}</h3>
-                  <span className="text-sm font-medium text-gray-900">
-                    {relatedProd?.price}
+                  <h3 className="text-gray-600 -mb-1 text-sm mt-1">{relatedProd?.name}</h3>
+                  <span className="text-sm font-semibold text-slate-600">
+                    {priceToString(relatedProd?.price)}원
                   </span>
                 </div>
               ))}

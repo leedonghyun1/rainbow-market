@@ -18,7 +18,7 @@ firebase.initializeApp(config);
 const messaging = firebase.messaging();
 
 self.addEventListener("push", function(event){
-  console.log("event:", event.data)
+//여기서 Json 받는게 문제인듯.!    
   if(event.data){
     const data = event.data.json().data;
     const options = {

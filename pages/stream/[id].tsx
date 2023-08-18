@@ -11,6 +11,10 @@ import Image from "next/image";
 import MessageList from "@components/message-list";
 import { io } from "socket.io-client";
 import SocketIOClient from "socket.io-client";
+import { ItemDetailResponse } from "pages/products/[id]";
+import cls from "@libs/client/utils";
+import { priceToString } from "@components/item";
+import { useFormatter } from "next-intl";
 
 interface StreamMessage {
   message: string;
@@ -50,6 +54,21 @@ const Streams: NextPage = () => {
   const { register, handleSubmit, reset } = useForm<MessageFrom>();
   const [connected, setConnected] = useState<boolean>(false);
 
+  const { data:findStar} = useSWR<ItemDetailResponse>(`/api/products/${router.query.id}/countStar`);
+
+  const [key, setKey] = useState(false);
+
+  const star =  Math.floor(findStar?.product?.user?.star/20);
+
+  const format = useFormatter();
+
+  const calTime = (time) => {
+    const dateTime = new Date(time);
+    const now = new Date(Date.now());
+    const result = format.relativeTime(dateTime, now);
+    return result;
+  };
+
   useEffect(():any=>{
    
     const socket = io("http://localhost:3000", {
@@ -73,6 +92,14 @@ const Streams: NextPage = () => {
       body: JSON.stringify(message),
     });
   };
+
+  const onCickKey=()=>{
+    if(key===false){
+      setKey(true);
+    } else{
+      setKey(false);
+    }
+  }
 
   const onValid=(message:MessageFrom)=>{
     if (isLoading) return;
@@ -119,41 +146,97 @@ const Streams: NextPage = () => {
             <div className="w-12 h-12 rounded-full bg-slate-500 " />
           )}
           <div className="text-sm text-gray-700 absolute left-14">
-            <p>{`${userData?.profile?.name}님의 홈쇼핑`}</p>
+            <span className="text-lg text-slate-500 font-semibold">{`${userData?.profile?.name}님의 홈쇼핑`}</span>
           </div>
-          <div className="text-sm font-semibold text-orange-500 flex flex-col items-center justify-between">
+          <div className="absolute right-12">
+            <button
+              className="bg-purple-300 p-2 rounded-full hover:bg-purple-400 transition-all block "
+              onClick={onCickKey}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-6 h-6 text-white"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className="text-sm font-semibold text-purple-500 flex flex-col items-center right-12 w-10">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              height="1em"
-              viewBox="0 0 640 512"
+              fill="rgb(168 85 247)"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-5 h-5"
             >
-              <path d="M320 96C178.6 96 64 210.6 64 352v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C0 175.3 143.3 32 320 32s320 143.3 320 320v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C576 210.6 461.4 96 320 96zm0 192c-35.3 0-64 28.7-64 64v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352c0-70.7 57.3-128 128-128s128 57.3 128 128v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352c0-35.3-28.7-64-64-64zM160 352v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352c0-123.7 100.3-224 224-224s224 100.3 224 224v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352c0-88.4-71.6-160-160-160s-160 71.6-160 160z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"
+              />
             </svg>
-            <p>주황 등급</p>
+            <div className="w-full rounded-full h-2.5 bg-gray-200 mt-1">
+              <div
+                className={cls(`bg-purple-400 h-2.5 rounded-full w-${star}`)}
+              ></div>
+            </div>
           </div>
         </div>
         <div className="mt-8 ml-3">
-          <h1 className="text-3xl font-bold text-slate-600">
-            {streamInfo?.stream?.name}
-          </h1>
-          <span className="text-sm block mt-3 text-slate-600">
-            {`${streamInfo?.stream?.price} 원`}
-          </span>
-          <p className="my-6 text-gray-700">{streamInfo?.stream?.description}</p>
-          <div className="bg-purple-300 overflow-scroll text-white flex flex-col items-left justify-center gap-2 p-2 rounded-xl">
-            <span>Stream Key (secret)</span>
-            <span>
-              <span>KEY: </span>
-              {streamInfo?.stream?.cloudflareKey}
-            </span>
-            <span>
-              <span>URL: </span>
-              {streamInfo?.stream?.cloudflareUrl}
-            </span>
+          <div className="border-t border-b py-6 mb-10">
+              <div className="flex flex-row mb-5 justify-center">
+                <div
+                  className={cls(
+                    "border overflow-scroll text-slate-700 flex-col gap-2 p-2 rounded-xl text-xs hover:bg-red-300 hover:text-white hover:font-semibold transition-all",
+                    key === true ? "flex" : "hidden"
+                  )}
+                >
+                  <span className="text-sm font-semibold text-center">
+                    노출 시 동일 방송 생성이 가능하므로 노출이 되지 않게
+                    해주세요.
+                  </span>
+                  <span>
+                    <span>KEY: {streamInfo?.stream?.cloudflareKey}</span>
+                  </span>
+                  <span>
+                    <span>URL: </span>
+                    {streamInfo?.stream?.cloudflareUrl}
+                  </span>
+                </div>
+              </div>
+            <div className="flex flex-row justify-between">
+              <span className="text-lg font-bold text-slate-600">
+                {streamInfo?.stream?.name}
+              </span>
+              <span className="text-sm mt-3 text-slate-700 font-semibold">
+                {priceToString(streamInfo?.stream?.price)}원
+              </span>
+            </div>
+            <div className="text-xs text-slate-400 underline">
+              <span>{calTime(streamInfo?.stream?.updatedAt)}</span>
+              <span>{` • 시청자수 20명`}</span>
+            </div>
+            <div className="mt-5">
+              <span className="text-slate-700 text-md">
+                {streamInfo?.stream?.description}
+              </span>
+            </div>
           </div>
         </div>
+
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Live Chat</h2>
+          <h2 className="text-xl font-bold text-white bg-purple-200 w-1/6 text-center rounded-md mx-3 mb-10">
+            Live Chat
+          </h2>
           <form onSubmit={handleSubmit(onValid)}>
             <div className="py-2 pb-16 h-[65vh] overflow-y-scroll px-4 space-y-4">
               {streamInfo?.stream?.streamMessage?.map((messages) => (
