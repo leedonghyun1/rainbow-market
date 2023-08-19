@@ -22,7 +22,7 @@ interface RoomWithUser extends Room{
   product:Product;
 }
 
-interface RoomListResponse {
+export interface RoomListResponse {
   ok: boolean;
   rooms: RoomWithUser[];
 }
@@ -41,7 +41,7 @@ const Chats: NextPage = () => {
         {data?.rooms?.map((room) =>
           room.lastChat ? (
             <Link
-              href={`/chat/product/${room.productId}`}
+              href={`/chat/room/${room.id}`}
               key={room.id}
               className="flex px-4 cursor-pointer py-3 items-center space-x-3"
             >

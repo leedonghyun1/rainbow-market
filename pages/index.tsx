@@ -70,7 +70,6 @@ const Home: NextPage = () => {
         if (currentToken) {
           // 정상적으로 토큰이 발급되면 콘솔에 출력합니다.
           // currentToken을 db에 개인에게 저장 후 나중에 notifications을 보낼 때 이용 필요.
-          console.log(currentToken);
 
           createFcmToken({ currentToken });
           

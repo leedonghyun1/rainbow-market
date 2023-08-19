@@ -42,11 +42,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       where: {
         OR: [
           {
-            productId: id + "",
+            id: id + "",
             userId:user?.id,
           },
           {
-            productId: id + "",
+            id: id + "",
             productOwnerId:user?.id,
           }
         ],

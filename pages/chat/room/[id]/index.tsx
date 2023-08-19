@@ -4,34 +4,24 @@ import useSWR from "swr";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import useUser from "libs/client/useUser";
-import { Product, Room, Sold, User } from "@prisma/client";
+import { Message, Product, Room, Sold, User } from "@prisma/client";
 import Layout from "components/layout";
 import useMutation from "@libs/client/useMutation";
 import MessageList from "@components/message-list";
 import client from "@libs/server/client"
 import cls from "@libs/client/utils";
-import { RoomListResponse } from "../..";
 
-interface ProductRoomWithMessage {
-  message:string;
-  id: string;
-  user: {
-    image?: string;
-    id?: string;
-  };
-}
 
-interface ProductWithMessage extends Room {
-  message:ProductRoomWithMessage[];
-}
-
-interface ProductWithRoom extends Product {
-  room: ProductWithMessage[];
+interface ProductWitSold extends Product {
   sold:Sold[];
+}
+
+interface RoomWithProduct extends Room {
+  product: ProductWitSold;
   user:User;
 }
 interface ProductResponse {
-  product: ProductWithRoom;
+  room: RoomWithProduct;
 }
 
 interface MessageFrom {
@@ -59,7 +49,7 @@ interface FcmTokenResponse{
   fcmToken:string;
 }
 
-const ChatDetail: NextPage<ProductResponse> = ({product}) => {
+const RoomDetail: NextPage<ProductResponse> = ({room}) => {
   const router = useRouter();
   const { user } = useUser();
 
@@ -70,14 +60,14 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
     `/api/chat/product/${router.query.id}/message`
   );
   const { data: checkRoomAndMsg, mutate } = useSWR<RoomResponse>(
-    router.query.id ? `/api/rooms/${router.query.id}` : null,
+    router.query.id ? `/api/rooms/${router.query.id}/selectedRoomMsg` : null,
     {
       refreshInterval: 500,
     }
   );
 
   const { data, mutate: boundMutate } = useSWR<RoomResponse>(
-    `/api/rooms/${router.query.id}`,
+    `/api/rooms/${router.query.id}/selectedRoomMsg`,
     { refreshInterval: 1000, revalidateOnFocus: true }
   );
 
@@ -143,33 +133,33 @@ const ChatDetail: NextPage<ProductResponse> = ({product}) => {
   };
 
   return (
-    <Layout canGoBack title={product?.user?.name} seoTitle={`${product?.name} chat`}>
+    <Layout canGoBack title={room.product.name} seoTitle={`${room.product.name} chat`}>
       <div className="py-2 px-4  space-y-4">
         <div className="mt-5 flex flex-row border-b py-2">
           <div>
             <img
               className="w-14 h-12 bg-gray-400 rounded-md shadow-lg"
-              src={`https://customer-odn2bz8flwihe8yi.cloudflarestream.com/${product?.uploadVideo}/thumbnails/thumbnail.jpg?time=1s&height=48`}
+              src={`https://customer-odn2bz8flwihe8yi.cloudflarestream.com/${room?.product?.uploadVideo}/thumbnails/thumbnail.jpg?time=1s&height=48`}
             />
           </div>
           <div className="flex flex-col ml-3">
             <span className="text-sm text-gray-500 font-semibold underline mb-1">
-              {product?.price} 원
+              {room?.product?.price} 원
             </span>
             <div
               className={cls(
                 "flex items-end justify-between px-3 rounded-md text-sm mr-3 self-center",
-                product?.sold[0].saleIs === false
+                room?.product?.sold[0].saleIs === false
                   ? "bg-slate-300"
                   : "bg-purple-400"
               )}
             >
-              {product?.sold[0].saleIs === false ? "판매중" : "판매완료"}
+              {room?.product?.sold[0].saleIs === false ? "판매중" : "판매완료"}
             </div>
           </div>
           <div className="ml-3">
-            <h1 className="text-xl font-bold text-gray-600">{product?.name}</h1>
-            <p className="text-sm text-gray-700">{product?.description}</p>
+            <h1 className="text-xl font-bold text-gray-600">{room?.product?.name}</h1>
+            <p className="text-sm text-gray-700">{room?.product?.description}</p>
           </div>
         </div>
         <div>
@@ -221,7 +211,7 @@ export const getStaticProps: GetStaticProps = async(ctx) =>{
       props:{},
     }
   }
-  const product = await client.product.findFirst({
+  const room = await client.room.findFirst({
     where: {
       id: ctx?.params?.id + "",
     },
@@ -231,38 +221,26 @@ export const getStaticProps: GetStaticProps = async(ctx) =>{
           name: true,
           email: true,
           image: true,
-          id:true,
+          id: true,
         },
       },
-      room: {
+      product: {
         include: {
-          message: {
+          sold: {
             select: {
-              id: true,
-              message: true,
-              user: {
-                select: {
-                  image: true,
-                  id: true,
-                },
-              },
+              saleIs: true,
             },
           },
         },
       },
-      sold:{
-        select:{
-          saleIs:true,
-        }
-      }
     },
   });
 
   return{
     props:{
-      product: JSON.parse(JSON.stringify(product)),
+      room: JSON.parse(JSON.stringify(room)),
     },
   }
 }
 
-export default ChatDetail;
+export default RoomDetail;
