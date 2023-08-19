@@ -183,10 +183,10 @@ export default function Layout({
             <span>라이브</span>
           </Link>
           <Link
-            href="/chat/product"
+            href="/chat"
             className={cls(
               "flex flex-col items-center space-y-2",
-              router.pathname === "/chat/product"
+              router.pathname === "/chat"
                 ? "text-purple-600  font-semibold"
                 : "hover:text-gray-900 transition-colors"
             )}

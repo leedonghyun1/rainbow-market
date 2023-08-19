@@ -5,6 +5,7 @@ import Link from "next/link";
 import useSWR from "swr";
 import { Message, Product, Room, User } from "@prisma/client";
 import Image from "next/image";
+import { useFormatter } from "next-intl";
 
 interface ReadOrNotWithMsg {
   id: string;
@@ -31,9 +32,14 @@ const Chats: NextPage = () => {
 
   const { data } = useSWR<RoomListResponse>("/api/rooms/findMyRooms")
 
-  ///가지고 오는거는 했어. 그다음에 읽었을 때는?
+  const format = useFormatter();
 
-  console.log(data);
+  const calTime = (time) => {
+    const dateTime = new Date(time);
+    const now = new Date(Date.now());
+    const result = format.relativeTime(dateTime, now);
+    return result;
+  };
 
   return (
     <Layout canGoBack title="Chat" seoTitle="채팅내역" hasTabBar>
@@ -57,20 +63,24 @@ const Chats: NextPage = () => {
                 <div className="w-12 h-12 rounded-full bg-slate-300" />
               )}
               <div>
-                <div className="flex">
-                  <p className="bg-slate-300 px-2 self-center text-sm rounded-md text-gray-500">
-                    물품
-                  </p>
-                  <p className="text-gray-700 p-1">{room.product.name}</p>
-                  <div className="self-center pb-1">
+                <div className="flex flex-row">
+                  <span className="text-gray-700 mr-1 py-1">{room.user.name}</span>
+                  {/* <div className="pb-1 self-center">
                     {room.unreadMsgs ? (
                       <span className="bg-purple-500 px-1 text-white rounded-full text-xs">
                         {room.unreadMsgs || 0}
                       </span>
                     ) : null}
-                  </div>
+                  </div> */}
                 </div>
-                <p className="text-sm text-gray-500">{room.lastChat}</p>
+                <div>
+                  <span className="text-slate-400 text-xs mr-2 underline">
+                    {calTime(room.timeOfLastChat)}
+                  </span>
+                  <span className="text-sm text-slate-500 font-semibold">
+                    {room.lastChat}
+                  </span>
+                </div>
               </div>
             </Link>
           ) : null

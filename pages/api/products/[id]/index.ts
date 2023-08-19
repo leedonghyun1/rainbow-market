@@ -44,6 +44,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
             productId:true,
             productOwnerId:true,
           }
+        },
+        _count:{
+          select:{
+            favorites:true,
+          }
         }
       },
     });

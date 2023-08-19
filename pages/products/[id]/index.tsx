@@ -11,11 +11,15 @@ import useSWR from "swr";
 import Link from "next/link";
 import { useFormatter } from "next-intl";
 import { priceToString } from "@components/item";
+import { useEffect } from "react";
 
 interface ProductWitheUser extends Product {
   user: User;
   sold: Sold[];
   room: Room[];
+  _count: {
+    favorites: number;
+  };
 }
 
 export interface ItemDetailResponse {
@@ -39,7 +43,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
   const { data, mutate: boundMutate } = useSWR<ItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
-  
+  console.log(data);
   const { data:productRoomData } = useSWR<ItemDetailResponse>(`/api/products/${router.query.id}`);
   const { data:findStar} = useSWR<ItemDetailResponse>(`/api/products/${router.query.id}/countStar`);
 
@@ -60,6 +64,10 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
   );
   const [deletePost, { data: postDeleteData }] =
     useMutation<ItemDeleteResponse>(`/api/products/${router.query.id}`);
+
+  const [updateViewCount] = useMutation(
+    `/api/products/${router.query.id}/viewCount`
+  );
 
   const onFavClicked = () => {
     if (!data) return;
@@ -94,16 +102,23 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
       router.push(`/chat/product/${router.query.id}`);
     } else {
       productRoomData?.product?.room?.map((room) => {
-        if (user?.id === room.userId || user?.id === room.productOwnerId) {
-          router.push(`/chat/product/${router.query.id}`);
+        if (user?.id === room?.userId || user?.id === room?.productOwnerId) {
+          console.log("check");
+          return router.push(`/chat/product/${router.query.id}`);     
         } else {
           // 상품의 채팅룸이 있으나 본인이 생성한 룸이 없을 때  ( 룸이 여러개이기 때문 )
+          console.log("check2");
           createRoom(data.product.userId);
-          router.push(`/chat/product/${router.query.id}`);
+          return router.push(`/chat/product/${router.query.id}`);
         }
       });
     }
   };
+
+  useEffect(()=>{
+    //product 조회수
+    updateViewCount({})
+  },[])
 
   return (
     <Layout canGoBack seoTitle="상품상세" title="슈퍼">
@@ -244,8 +259,8 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
               <div className="px-2 flex flex-col">
                 <div className="underline text-xs text-slate-400">
                   <span>{calTime(data?.product?.updatedAt)}</span>
-                  <span> • 조회수 2회</span>
-                  <span> • 좋아요 5회</span>
+                  <span> • 조회수 {data?.product?.viewCount}회</span>
+                  <span> • 좋아요 {data?.product?._count.favorites }회</span>
                 </div>
                 <span className="text-sm mt-5">
                   {data?.product?.description}

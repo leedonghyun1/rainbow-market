@@ -93,6 +93,7 @@ model Product {
   uploadVideo String?
   link        String?    @db.Text
   description String?    @db.Text
+  viewCount Int?
   favorites   Favorite[]
   message     Message[]
   room        Room[]

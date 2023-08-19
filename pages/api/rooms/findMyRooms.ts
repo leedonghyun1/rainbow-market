@@ -34,24 +34,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       },
     });
 
-    let unreadMsgCount=0;
-
-    rooms.map((room)=>{
-      room.user.messages.map(async(message)=>{
-        if(message.readOrNot===false){
-          unreadMsgCount += 1;
-          await client.room.update({
-            where: {
-              id: room?.id,
-            },
-            data: {
-              unreadMsgs: unreadMsgCount,
-            },
-          });
-        }
-      })
-    })
-
     res.json({
       ok: true,
       rooms,
