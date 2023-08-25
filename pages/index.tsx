@@ -11,6 +11,7 @@ import FloatingButton from "@components/floating-button";
 import { useFormatter } from "next-intl";
 import { initializeApp } from 'firebase/app'
 import { getMessaging, onMessage, getToken } from 'firebase/messaging'
+import { useRouter } from "next/router";
 
 
 export interface ProductWithCount extends Product {
@@ -33,6 +34,7 @@ interface loginMutation {
 
 const Home: NextPage = () => {
   const { data } = useSWR<ProductReponse>("/api/products");
+  const router = useRouter();
   
   const { data: session } = useSession();
   const { data: notificationUpdate } = useSWR("/api/users/me/notification");
@@ -46,6 +48,10 @@ const Home: NextPage = () => {
   ] = useMutation<ProductReponse>("/api/search");
 
   const [ createFcmToken ] = useMutation("/api/users/me/fcmToken");
+
+  const [updateViewCount] = useMutation(
+    `/api/products/${router.query.id}/viewCount`
+  );
 
   const [beforeSearch, afterSearch] = useState(false);
 
@@ -142,7 +148,8 @@ const Home: NextPage = () => {
                     image={product.uploadVideo}
                     sold={product.sold[0].saleIs}
                     room={product._count?.room || 0}
-                    time={calTime(product.updatedAt)}
+                    time={calTime(product.createdAt)}
+                    viewCount={product.viewCount}
                   />
                 ))
               : searchData
@@ -156,6 +163,8 @@ const Home: NextPage = () => {
                     image={product.uploadVideo}
                     sold={product.sold[0].saleIs}
                     room={product._count?.room || 0}
+                    time={calTime(product.createdAt)}
+                    viewCount={product.viewCount}
                   />
                 ))
               : data?.products?.map((product) => (
@@ -168,6 +177,8 @@ const Home: NextPage = () => {
                     image={product.uploadVideo}
                     sold={product.sold[0].saleIs}
                     room={product._count?.room || 0}
+                    time={calTime(product.createdAt)}
+                    viewCount={product.viewCount}
                   />
                 ))}
           </div>

@@ -43,7 +43,7 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
   const { data, mutate: boundMutate } = useSWR<ItemDetailResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
-  console.log(data);
+
   const { data:productRoomData } = useSWR<ItemDetailResponse>(`/api/products/${router.query.id}`);
   const { data:findStar} = useSWR<ItemDetailResponse>(`/api/products/${router.query.id}/countStar`);
 
@@ -103,11 +103,9 @@ export default function ItemDetails(req: NextApiRequest, res: NextApiResponse) {
     } else {
       productRoomData?.product?.room?.map((room) => {
         if (user?.id === room?.userId || user?.id === room?.productOwnerId) {
-          console.log("check");
           return router.push(`/chat/product/${router.query.id}`);     
         } else {
           // 상품의 채팅룸이 있으나 본인이 생성한 룸이 없을 때  ( 룸이 여러개이기 때문 )
-          console.log("check2");
           createRoom(data.product.userId);
           return router.push(`/chat/product/${router.query.id}`);
         }

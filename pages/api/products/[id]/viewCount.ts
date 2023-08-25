@@ -10,22 +10,29 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   if (req.method === "POST"){
     
-    const count = await client.product.findUnique({
+    const productViewCount = await client.product.findUnique({
       where:{
         id:id+"",
       },
       select:{
+        userId:true,
         viewCount:true,
       }
     })
- 
-    const updateViewCount = await client.product.update({
-      where:{
-        id: id+"",
-      },
-      data:{
-        viewCount: count.viewCount+1,
-      }
+
+    if(productViewCount.userId !== user?.id){
+      const updateViewCount = await client.product.update({
+        where:{
+          id: id+"",
+        },
+        data:{
+          viewCount: productViewCount.viewCount+1,
+        }
+      })
+    }
+
+    res.json({
+      ok:true,
     })
   }
 }

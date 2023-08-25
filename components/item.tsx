@@ -1,6 +1,7 @@
 import cls from "@libs/client/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 interface ItemProps {
   id: string;
@@ -11,6 +12,7 @@ interface ItemProps {
   sold: boolean;
   room: number;
   time?: string;
+  viewCount?:number;
 }
 
 export function priceToString(price) {
@@ -26,6 +28,7 @@ export default function Item({
   sold,
   room,
   time,
+  viewCount,
 }: ItemProps){
 
   return (
@@ -38,10 +41,15 @@ export default function Item({
           className="w-20 h-auto bg-gray-400 rounded-md shadow-md"
           src={`https://customer-odn2bz8flwihe8yi.cloudflarestream.com/${image}/thumbnails/thumbnail.jpg?time=1s&height=48`}
         />
-        <div className="pt-2 flex flex-col gap-1">
+        <div className="pt-2 flex flex-col ">
           <h3 className="text-sm font-medium text-slate-500">{title}</h3>
-          <span className="text-xs text-slate-500">{time}</span>
-          <span className="font-medium mt-1 text-gray-900 text-xs">{priceToString(price)} 원</span>
+          <div>
+            <span className="text-xs text-slate-500">{time}</span>
+            <span className="text-xs text-slate-500">{` • 조회수 ${viewCount || 0}`}</span>
+          </div>
+          <span className="font-medium mt-1 text-gray-900 text-xs">
+            {priceToString(price)} 원
+          </span>
         </div>
       </div>
       <div className="flex items-end justify-end">
